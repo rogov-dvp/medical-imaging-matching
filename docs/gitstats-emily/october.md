@@ -9,3 +9,9 @@ For: Emily Medema
 
 2) Oct. 6, 2021 - Issue #22
    - Wrote Project description slide
+
+3) Oct. 8, 2021 - Issue #28
+   - Determined testing plan.
+   - Researched how to implement testing plan and made recommendation.
+   - Wrote testing plan slide.
+   - Determined CI/CD plan and wrote the corresponding slide.
