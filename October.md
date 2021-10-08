@@ -9,10 +9,9 @@
   - Issue #35
   - wrote up slides with information on different models
 
+
 3. Added slides for SciKit library
   - Oct 8, 2012
   - Issue #43
   - wrote up slides with information on scikit learning
-
-
 
