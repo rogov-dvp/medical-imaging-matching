@@ -15,3 +15,14 @@
   - Issue #43
   - wrote up slides with information on scikit learning
 
+
+
+4. Added slides for tech stack
+  - Oct 8, 2012
+  - Issue #27
+  - wrote up slides with information on tech stack
+
+
+
+
+
