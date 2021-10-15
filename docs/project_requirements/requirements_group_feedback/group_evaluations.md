@@ -26,9 +26,9 @@ Table containing all our comments on each presentation.
 | Woo Woo           | 0  | <ul><li></li><li></li><li></li><li></li></ul>|
 | Woo Woo           | 1  | <ul><li></li><li></li><li></li><li></li></ul> |
 | Woo Woo           | 2  | <ul><li></li><li></li><li></li><li></li></ul>|
-| LIMS              | 0  | - |
-| LIMS              | 1  | - |
-| LIMS              | 2  | - |
+| LIMS              | 0  | <ul><li> Really good intro clarified the project and its relevance </li><li>You really put some effort into the planning and structuring of your project, we feel like you know how to tackle th upcoming challenges</li><li>We had some issues following DFD Level 1 as the picture was blurry and the description of it was high level, maybe you can clarify this in the report if not already done</li><li>Your Milestone planning looked pretty high level maybe it will help you to make a more detailed deadline plan for every feature, for the first mileston, to keep track of the progress</li><li>Were there any other reasons for choosing django than your experience?</li><li>Good Test planning</li></ul>|
+| LIMS              | 1  | <ul><li>We really liked your explanation of how you came up with the tech stack</li><li>Your DFD was pretty high level so it is kind of hard to give very detailed feedback</li><li>Maybe it will be helpful to include a more detailed plan of feature deadlines so you can keep track of your progress</li></ul>|
+| LIMS              | 2  | <ul><li>Good introduction into your project, helped us to understand the rest better</li><li>very detailed non functional requirements, this gave us the feeling you are really aware of what to watch out for</li><li>It could be helpful to plan your progress and deadlines a bit more detailed, so you can keep track of your progress</li></ul>|
 | AGMEETING         | 0  | - |
 | AGMEETING         | 1  | - |
 | AGMEETING         | 2  | - |
