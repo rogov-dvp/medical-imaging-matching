@@ -17,9 +17,37 @@ Table containing all our comments on each presentation.
 | Checklik          | 0  | - |
 | Checklik          | 1  | - |
 | Checklik          | 2  | - |
-| Cyclops           | 0  | - |
-| Cyclops           | 1  | - |
-| Cyclops           | 2  | - |
+| Cyclops           | 0  | 
+	- We think the slides could have been done a bit more organized. For example, under User Groups, why not list the three different user groups then write a small description about them under it.
+	
+	- DFD level 1 was nicely done.
+	
+	- Regarding "choosing tech stack", why is Unity considered for a web development project. Just seems a bit strange As well, isn't having to choose any of the three biggest JavaScript Frameworks with Ionic would be considered a "pro" attribute? Additionally, we are a bit confused about what does "Transitioning from app into website is easier" mean. Did you mean to say that it's easy to turn an ionic app into an android or ios app?
+	
+	- Testing was good, nice
+
+	- Final note, 13:37min, is significantly longer than the 10min limit for the video.
+
+| Cyclops           | 1  | 
+	- DFD looks very nice and clean, especially DFD level 1.
+	
+	- Why is basic styling included in Peer Testing #1. We feel like that is not an essential part of the project. Shouldn't something like the Eco Tracker (or atleast a portion?) be part of Peer Testing #1
+
+	- We think it would great if the team could explain how they plan to work with the other Cyclops groups. We say this becuse it seems like other groups plan to use different stack. So, how could different tech stack come together or is each team creating their own web app?
+	
+	- Why was Ruby on Rails chosen over something popular like React.js?
+	
+	- We like the egyption/nature background music :) . 
+
+| Cyclops           | 2  | 
+	- The DFD are missing the objects being passed between the components. They are quite essential to understanding a DFD.
+	
+	- Regarding testing, isn't your team the "developers" who need to choose a testing? We think it would be great hear which testing method your team chooses
+	
+	- Just a thought, in the Non-Function Requirements slide, it is stated that a well defined technical documentation is required. How will your team ensure that they will develop this. Ie. does your team plan to update the technical document as they create features or will it all be completed by the end of the Peer Testing?
+	
+	- Overall, a solid presentation
+  
 | Ethics Dashboard  | 0  | - |
 | Ethics Dashboard  | 1  | - |
 | Ethics Dashboard  | 2  | - |
