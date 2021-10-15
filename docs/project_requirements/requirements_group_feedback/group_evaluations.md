@@ -34,6 +34,6 @@ Table containing all our comments on each presentation.
 | AGMEETING         | 2  | - |
 | MIM               | 0  | - <ul><li>We really enjoyed watching your teams video, there was alot of detail and thought put into the presentation, from the presentation you are able to get an informed grasp on the requirements of the project.</li><li> The idea of incorporating parrallel processing is very intelligeable.</li><li> We found the DFD level one slightly crowded maybe try simplifiying this diagram so it will be simpler to follow the flow of the diagram.</li></ul>|
 | MIM               | 1  | - This is our video |
-| TMI               | 0  | - |
+| TMI               | 0  | - <ul><li> Nice job including creativity within the project through creating the name DICOManaon!</li><li> We thought the presentation gave a ton of insight intot the project,but would suggest diving a bit deeper into the specifics of the tech stack, including more details, as well as elaborating on the testing methods.</li><li>The presentation is missing the non functional requirements aspect. If you have not been given non-functional requirements, maybe try adding some possibilities, or stating this?</li><li></li></ul>|
 | TMI               | 1  | - |
 | TMI               | 2  | - |
