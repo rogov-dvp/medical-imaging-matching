@@ -32,7 +32,7 @@ Table containing all our comments on each presentation.
 | AGMEETING         | 0  | - |
 | AGMEETING         | 1  | - |
 | AGMEETING         | 2  | - |
-| MIM               | 0  | - <ul><li>We really enjoyed watching your teams video, there was alot of detail and thought put into the presentation, from the presentation you are able to get an informed grasp on the requirements of the project.</li><li> The idea of incorporating parrallel processing is very intelligeable.</li><li> We found the DFD level one slightly crowded maybe try simplifiying this diagram so it will be simpler to follow the flow of the diagram.</li></ul>|
+| MIM               | 0  | - <ul><li>We really enjoyed watching your teams video, there was alot of detail and thought put into the presentation, from the presentation you are able to get an informed grasp on the requirements of the project.</li><li> The idea of incorporating parrallel processing is a very smart idea.</li><li> We found the DFD level one slightly crowded maybe try simplifiying this diagram so it will be simpler to follow the flow of the diagram.</li></ul>|
 | MIM               | 1  | - This is our video |
 | TMI               | 0  | - |
 | TMI               | 1  | - |
