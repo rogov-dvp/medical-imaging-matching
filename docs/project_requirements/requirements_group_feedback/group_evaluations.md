@@ -33,7 +33,15 @@ Table containing all our comments on each presentation.
 | AGMEETING         | 0  | - |
 | AGMEETING         | 1  | - |
 | AGMEETING         | 2  | - |
+
 | MIM               | 0  | <ul><li>We really enjoyed watching your teams video, there was alot of detail and thought put into the presentation, from the presentation you are able to get an informed grasp on the requirements of the project.</li><li> The idea of incorporating parrallel processing is a very smart idea.</li><li> We found the DFD level one slightly crowded maybe try simplifiying this diagram so it will be simpler to follow the flow of the diagram.</li></ul>|
+
+| MIM               | 0  | - <ul><li>We really enjoyed watching your teams video, there was alot of detail and thought put into the presentation, from the presentation you are able to get an informed grasp on the requirements of the project.</li><li> The idea of incorporating parrallel processing is very intelligeable.</li><li> We found the DFD level one slightly crowded maybe try simplifiying this diagram so it will be simpler to follow the flow of the diagram.</li></ul>|
+| MIM               | 1  | - This is our video |
+| TMI               | 0  |  <ul><li> Nice job including creativity within the project through creating the name DICOManaon!</li><li> We thought the presentation gave a ton of insight into the project, but would suggest diving a bit deeper into the specifics of the tech stack, including more details, as well as elaborating on the testing methods.</li><li>The presentation is missing the non-functional requirements aspect. If you have not been given non-functional requirements, maybe try adding some possibilities, or stating this?</li></ul>|
+| TMI               | 1  | <ul><li>We found your presentation to be very well thought out.The inclusion of having multiple different approaches was well done, especially enjoyed the diagrams and detail implemented into each different scenario.</li><li> Overall the video was good, but in general the speed was a bit too fast and some of words were cut off mid sentence. This probably has to do with the time contraints, but something to think about.</li></ul>|
+| TMI               | 2  | <ul><li>We appreciated the inclusion of who the clients are, and added definitions in the introduction of the project, very well done!</li><li> The added humour was a nice bonus when watching the presentation.</li><li> We found that the tech stack could use a little more details about the reasoning behind the your teams choices. A suggestion would be to include some pros and cons or extra additional details.</li><li>We liked the addition of dates on the project time line.</li></ul>|
+
 
 | LIMS              | 2  | <ul><li>Good introduction into your project, helped us to understand the rest better</li><li>very detailed non functional requirements, this gave us the feeling you are really aware of what to watch out for</li><li>It could be helpful to plan your progress and deadlines a bit more detailed, so you can keep track of your progress</li><li>We were wondering whether you also looked into other programming languages, as go does no seem to be the initial first choice to us. What were the downsides of them so you ended up with go?</li></ul>|
 | AGMEETING         | 0  | <ul><li>Looks like you really spend some time on planning the structure of your project</li><li>we noticed that only a moderator and admin can provide documents to the vault, would you ever see the need for participants to provide a document to the vault?</li><li>We like your planning of feature implementation deadlines, but it seems like you will be done by Milestone 2? Do you think this is realistic, given the amount of work you have?</li><li>We got the impression that you take testing seriously</li></ul>|
@@ -45,3 +53,4 @@ Table containing all our comments on each presentation.
 | TMI               | 0  | - |
 | TMI               | 1  | - |
 | TMI               | 2  | - |
+
