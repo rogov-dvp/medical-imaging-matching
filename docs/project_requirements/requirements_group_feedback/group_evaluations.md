@@ -14,9 +14,31 @@ Table containing all our comments on each presentation.
 
 |Project|Team|Comments|
 |:------------------|:--:|:--------------------------------------------------------------------------------|
-| Checklik          | 0  | - |
-| Checklik          | 1  | - |
-| Checklik          | 2  | - |
+| Checklik          | 0  | 
+- What are some possible improvements on the first page of checklist? The presenter said it was taking too much space, but it seemed like to you can minimize unused portions of the checklist. And the current checklist features seem required to exist (ie. no current feature should be removed). Could you provide    some examples on how you might improve the spacing?
+
+- The Data Flow diagram looks mostly good. However, we don't see lots of information coming out of the Database. we would think that informatino would be need to be presented to athletes or someone. we only noticed one think coming out of the database in DFD level 1 but it was very small to read and it's flow wasn't shown in detail. Shouldn't this output information be essential part to your project?
+
+- Testing was clear. One thing we wondered is how often would you perform end-to-end testing since we would assume it would be a lengthy process. Do you plan on doing it for every minor feature? 
+                    
+| Checklik          | 1  | 
+- We believe the Data Flow Diagram level 1 charts were confused with an Entity Relationship Diagram. Many components have arrows with the "has" labels which is what an Entity Relationship Diagram would contain. Many have objects being passed between components which is good. 
+
+- For milestones, we think an interesting point to bring up would be: why are the points in Milestone 1 are selected to be completed first. Are the points in Milestone 2 based on Miletstone 1? Overall, milestones were clear.
+
+- There might be some missing information under Maintainability in Non-Functional Requirements? ie. Does the team plan to do end-to-end testing from time to time, test features on themselves, etc... We do understand that feature Testing is mentioned later in the slides which is good.
+
+- Perhaps describe what COTS is and why it (and Bulma) is an environemnt constraint. Just a bit confusing
+
+| Checklik          | 2  | 
+- Nice Presentation. We liked the descriptions of the problems, scope, and how the three teams will be working with the client. It provided a solid understand of your situation.
+
+- During the Nonfunctional Requirements part of the presentation, it is said that the site should have a consistent style and modern look. Will all the teams + client agree on a specific colour palette or design style? Or perhaps every team competes for a style every week. We think that would be an interested point to be briefly discussed.
+
+- Is it possible for each team to develop/work on a different parts of the website? That way, work load is distributed and the client request to migrated the website to react can be accomodated?
+
+- Clear and easy-to-follow slides. Overall, nice job
+
 | Cyclops           | 0  | - |
 | Cyclops           | 1  | - |
 | Cyclops           | 2  | - |
