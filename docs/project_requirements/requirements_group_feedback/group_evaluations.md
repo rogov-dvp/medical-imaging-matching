@@ -26,9 +26,18 @@ Table containing all our comments on each presentation.
 | Woo Woo           | 0  | - |
 | Woo Woo           | 1  | - |
 | Woo Woo           | 2  | - |
-| LIMS              | 0  | - |
-| LIMS              | 1  | - |
-| LIMS              | 2  | - |
+| LIMS              | 0  | - Really good intro clarified the project and its relevance
+                           - You really put some effort into the planning and structuring of your project, we feel like you know how to tackle th upcoming challenges
+                           - We had some issues following DFD Level 1 as the picture was blurry and the description of it was high level, maybe you can clarify this in the report if not already done
+                           - Your Milestone planning looked pretty high level maybe it will help you to make a more detailed deadline plan for every feature, for the first mileston, to keep track of the progress 
+                           - Were there any other reasons for choosing django than your experience?
+                           - Good Test planning |
+| LIMS              | 1  | - We really liked your explanation of how you came up with the tech stack
+                           - Your DFD was pretty high level so it is kind of hard to give very detailed feedback
+                           - Maybe it will be helpful to include a more detailed plan of feature deadlines so you can keep track of your progress|
+| LIMS              | 2  | - Good introduction into your project, helped us to understand the rest better
+                           - very detailed non functional requirements, this gave us the feeling you are really aware of what to wtch out for
+                           - It could be helpful to plan your progress and deadlines a bit more detailed, so you can keep track of your progress|
 | AGMEETING         | 0  | - Looks like you really spend some time on planning the structure of your project (good dfds)
                            - We got the impression that you take testing seriously
                            - We like your planning of feature implementation deadlines | 
