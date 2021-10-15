@@ -29,9 +29,16 @@ Table containing all our comments on each presentation.
 | LIMS              | 0  | - |
 | LIMS              | 1  | - |
 | LIMS              | 2  | - |
-| AGMEETING         | 0  | - |
-| AGMEETING         | 1  | - |
-| AGMEETING         | 2  | - |
+| AGMEETING         | 0  | - Looks like you really spend some time on planning the structure of your project (good dfds)
+                           - We got the impression that you take testing seriously
+                           - We like your planning of feature implementation deadlines | 
+| AGMEETING         | 1  | - You really spend sometime planning what needs to be included and what are the important bits to watch out for we
+                           got the feeling you represent this in your tech stack 
+                           - Same applies for the architecture and the general requirements
+                           - We think it could be helpful to come up with a more detailed deadline schedule, to keep track of the progress |
+| AGMEETING         | 2  | - We liked you DFD as it enabled as to get a good overview of what the system will be doing
+                           - Maybe you can explain a bit more detailed, why you decided for this tech stack
+                           - We also got the impression, that your time planning, was pretty high level, it could be helpful, to include a more detailed deadline plan, to keep track of the progress you are making|
 | MIM               | 0  | - |
 | MIM               | 1  | - This is our video |
 | TMI               | 0  | - |
