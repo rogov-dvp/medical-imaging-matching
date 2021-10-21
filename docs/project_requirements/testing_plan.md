@@ -6,7 +6,21 @@ Reason for Update: Adding developments from Requirements Milestone and Group Eva
 
 ## Testing Frameworks
 
+### Unit Tests
+We will be implementing unit testing throughout our project. Each method in the model(s) as well as within our preprocessing script will have a unit test with which it is associated. All of our unit tests will utilize the built-in python testing library `unittest`. This testing will ensure that all of our methods are functioning and returning the values we expect.
 
+### Integration Testing
+In addition to unit testing, we will also be performing integration testing on our codebase. This is an essential element to our testing as there are multiple scripts and interesting data requirements within this project. We need to ensure that the model script and the preprocessing script are working together properly; that the data is accessed safely and securely; and that the data is not leaving BC Cancer’s network. 
+
+[Integration Testing Resource](https://mq-software-carpentry.github.io/python-testing/09-integration/)
+
+### Regression Testing
+Likewise, we will also be performing regression testing. This will ensure we are not breaking our code whenever we add a new piece of code. To do this, we will utilize the `pytest-regtest` python plugin to check that the format of the output remains the same as before (ie. no errors).
+
+[Regression Testing Resource](https://pypi.org/project/pytest-regtest/)
+
+### Functional Testing
+Lastly, we will be performing functional testing. It is essential to our project that we select the correct images in accordance with the mismatches we input and that we return a similarity index that makes sense. Functional testing will help us ensure that this is true. 
 
 ## CI/CD
 
