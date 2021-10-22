@@ -9,3 +9,8 @@
   - Oct 8, 2021
   - Issue #24
   - Created a DFD Level 1 diagram and described the components
+
+3. Research on DFDs
+  - Oct 21, 2021
+  - issue #83
+  - Research on DFD
