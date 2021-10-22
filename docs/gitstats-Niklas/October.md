@@ -23,3 +23,4 @@
 - Work on the report writing detailed requirements section
 - Research triplet loss function which is wiedly used in face recognition
 - experiment with tensorflow and opencv 
+
