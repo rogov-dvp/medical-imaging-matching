@@ -10,6 +10,17 @@
 - Issue #32
 - Researched Nets that might be interesting for transfer learning and the loss functions we could use with them
 
-## 3) Oct 8, 2021 - Prepare/define functional requirements for presentation
+## 4) Oct 8, 2021 - Prepare/define functional requirements for presentation
 - Issue #32
 - Discuss requirements in the group and prepare slides for presentation
+
+## 4) Oct 13, 2021 - Prepare/define functional requirements for presentation
+- Working on our presentation
+- Come up with a timeplan and build a gantt chart out of it containing the relations
+- Record voice for the requirements and gantt chart
+
+## 5) 
+- Work on the report writing detailed requirements section
+- Research triplet loss function which is wiedly used in face recognition
+- experiment with tensorflow and opencv 
+
