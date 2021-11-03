@@ -19,3 +19,14 @@ For: Emily Medema
 4) Oct. 8, 2021 - Issue #26
    - Determined non-functional requirements.
    - Wrote non-functional requirements slide.
+
+5) Oct. 9, 2021 - Oct. 15, 2021
+   - All issues related to the presentation.
+   - All wrote and narrated all testing plan slides.
+   - Overlaid all narration onto a screen recording of slides.
+
+6) Oct. 16, 2021 - Oct. 22, 2021
+   - Testing plan section for report
+   - Answered questions from peers
+   - Edited report
+   - Installed pre-commit framework into repo.

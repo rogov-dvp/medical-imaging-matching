@@ -1,13 +1,17 @@
 **Data Flow Diagrams**
 
 ***DFD Level 0***
-![alt text](https://github.com/rogov-dvp/medical-imaging-matching/tree/main/docs/project_requirements/dfd_level0.jpg)
+
+![](https://raw.githubusercontent.com/rogov-dvp/medical-imaging-matching/main/docs/project_requirements/images/dfd_level0.jpg)
+
 
 The client will query and receive the specified mammograms which are stored in the File System. The client will then send at least two mammograms to the Image Matching Script. This Image Matching script will then return a match similarity percentage to the client. 
 
 
 ***DFD Level 1***
-![alt text](https://github.com/rogov-dvp/medical-imaging-matching/tree/main/docs/project_requirements/dfd_level1.jpg)
+
+![](https://raw.githubusercontent.com/rogov-dvp/medical-imaging-matching/main/docs/project_requirements/images/dfd_level1.jpg)
+
 
 The client will query and receive the specified mammograms which are stored in the File System.
 
