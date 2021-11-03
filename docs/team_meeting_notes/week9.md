@@ -15,7 +15,7 @@ ___
 ___
 #### **Alex**
 - Research implementation of Siamese Network
-- Implement skeleton for Siamese network
+- Implement skeleton for SSIM
 - Try running FaceNET
 
 #### **Emily**
