@@ -34,6 +34,7 @@ DA allows us to artificially expand the size of our training set by modifying ou
 - `Albumentations`
 - `Imgaug`
 - `AutoAugment (DeepAugment)`
+- `OpenCV`
 
 ### Implementation
 
