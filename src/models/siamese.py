@@ -22,7 +22,7 @@ the class segmentation of the training inputs.
 """
 ## Setup
 """
-
+# https://github.com/keras-team/keras-io/blob/master/examples/vision/siamese_network.py
 import random
 import numpy as np
 import tensorflow as tf
