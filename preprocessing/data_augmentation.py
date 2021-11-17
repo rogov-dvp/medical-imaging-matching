@@ -133,54 +133,45 @@ for img_name in image_files:
         "../test_images_kaggle/preprocessed_images/hrshift_" + img_name, hs_image
     )
     # da.show_image(hs_image)
-    if saved:
-        print("HR Shift image is saved")
+
     # vertical shift
     img = da.vertical_shift(image, 0.7)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/vshift_" + img_name, img
     )
-    if saved:
-        print("Vertical shift image is saved")
+
     # brightness
     bright_img = da.brightness(image, 0.5, 3)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/bright_" + img_name, bright_img
     )
-    if saved:
-        print("Brightened image is saved")
+
     # zoomed
     zoomed_img = da.zoom(image, 0.5)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/zoomed_" + img_name, zoomed_img
     )
-    if saved:
-        print("Zoomed image is saved")
+
     # channel shift
     cshift_img = da.channel_shift(image, 60)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/cshift_" + img_name, cshift_img
     )
-    if saved:
-        print("Channel Shifted image is saved")
+
     # h flip
     hflip_img = da.horizontal_flip(image, True)
     saved = cv2.imwrite(
         "../test_images/kaggle/preprocesses_images/hflip_" + img_name, hflip_img
     )
-    if saved:
-        print("Horizontal Flip image is saved")
+
     # v flip
     vflip_img = da.vertical_flip(image, True)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/vflip_" + img_name, vflip_img
     )
-    if saved:
-        print("Vertical Flip image is saved")
+
     # rotation
     rotated_img = da.rotation(image, 30)
     saved = cv2.imwrite(
         "../test_images_kaggle/preprocessed_images/rotated_" + img_name, rotated_img
     )
-    if saved:
-        print("Rotated image is saved")
