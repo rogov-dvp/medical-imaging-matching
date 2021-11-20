@@ -1,57 +1,30 @@
-# https://youtu.be/16s3Pi1InPU
 """
-Comparing images using ORB/SIFT feature detectors
-and structural similarity index. 
-@author: Sreenivas Bhattiprolu
+Based on original author: Sreenivas Bhattiprolu
+https://youtu.be/16s3Pi1InPU
+https://github.com/bnsreenu/python_for_microscopists/blob/master/191_measure_img_similarity.py
 """
 
 from skimage.metrics import structural_similarity
+from skimage.transform import resize    #SSIM
 import cv2
 
-#Works well with images of different dimensions
-def orb_sim(img1, img2):
-  # SIFT is no longer available in cv2 so using ORB
-  orb = cv2.ORB_create()
+#PARAMETERS TO SET (INPUT) | start ---------------------------
+# image paths (same dimensions preferred):
+img1_path = 'medical-imaging-matching/test_images_kaggle/images/2016_BC003122_ MLO_L.jpg'
+img2_path = 'medical-imaging-matching/test_images_kaggle/images/2016_BC014002_ MLO_L.jpg'
 
-  # detect keypoints and descriptors
-  kp_a, desc_a = orb.detectAndCompute(img1, None)
-  kp_b, desc_b = orb.detectAndCompute(img2, None)
-
-  # define the bruteforce matcher object
-  bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-    
-  #perform matches. 
-  matches = bf.match(desc_a, desc_b)
-  #Look for similar regions with distance < 50. Goes from 0 to 100 so pick a number between.
-  similar_regions = [i for i in matches if i.distance < 50]  
-  if len(matches) == 0:
-    return 0
-  return len(similar_regions) / len(matches)
+#PARAMETERS TO SET (INPUT) | end ---------------------------
 
 
-#Needs images to be same dimensions
-def structural_sim(img1, img2):
+# Get images
+img1 = cv2.imread(img1_path, 0)
+img2 = cv2.imread(img2_path, 0)
 
-  sim, diff = structural_similarity(img1, img2, full=True)
-  return sim
+# Resize img2 to match the W x H dimensions of img1. Best to not resize and have the same dimensions.
+if img2.shape != img2.shape:
+  img2 = resize(img2, (img1.shape[0], img1.shape[1]), anti_aliasing=True, preserve_range=True)
+  
+# Call SSIM function
+ssim, diff = structural_similarity(img1, img2, full=True)
+print("Similarity using SSIM is {:.3f}%\n".format(ssim*100))
 
-img1 = cv2.imread('../../test_images_kaggle/images/2016_BC003122_ CC_L.jpg', 0)
-img1_right = cv2.imread('../../test_images_kaggle/images/2016_BC003122_ CC_R.jpg', 0)
-
-# print(img1_right)
-
-img2 = cv2.imread('../../test_images_kaggle/images/2016_BC014002_ CC_L.jpg', 0)
-img3 = cv2.imread('../../test_images_kaggle/images/2016_BC016802_ CC_L.jpg', 0)  # 714 x 901 pixels
-img4 = cv2.imread('../../test_images_kaggle/images/2016_BC016983_ CC_L.jpg', 0)  # 714 x 901 pixels
-# img3 = cv2.imread('images/BSE_smoothed.jpg', 0)  # 203 x 256 pixels
-# img4 = cv2.imread('images/different_img.jpg', 0)  # 203 x 256 pixels
-
-orb_similarity = orb_sim(img3, img2)  #1.0 means identical. Lower = not similar
-print(orb_similarity)
-# print("Similarity using ORB is {:.3f}%\n".format(orb_similarity))
-#Resize for SSIM
-# from skimage.transform import resize
-# img5 = resize(img2, (img1.shape[0], img1.shape[1]), anti_aliasing=True, preserve_range=True)
-
-# ssim = structural_sim(img1, img5) #1.0 means identical. Lower = not similar
-# print("Similarity using SSIM is: ", ssim)
