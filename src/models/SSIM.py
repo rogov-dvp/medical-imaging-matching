@@ -3,6 +3,7 @@
 Comparing images using ORB/SIFT feature detectors
 and structural similarity index. 
 @author: Sreenivas Bhattiprolu
+https://github.com/bnsreenu/python_for_microscopists/blob/master/191_measure_img_similarity.py
 """
 
 from skimage.metrics import structural_similarity
