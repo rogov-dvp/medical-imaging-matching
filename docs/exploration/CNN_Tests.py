@@ -1,5 +1,7 @@
 import unittest
 
+import tensorflow as tf
+
 class Test_CNN(unittest.TestCase):
     def inputShape(self):
         """
@@ -11,13 +13,31 @@ class Test_CNN(unittest.TestCase):
         """
         Test that the output shape of CNN is as expected
         """
-        self.assertEqual()
+        shape = (1, self.unet.image_size, self.unet.image_size, 3)
+        image = tf.ones(shape)
+        self.unet.build()
+        self.assertEqual(self.unet.model.predict(image).shape, shape)
 
     def WeightsAreChanging(self):
         """
         Tests that the CNN actually learns
         """
-        self.assertEqual()
+        model = Model
+        sess = tf.Session()
+        gen_vars = tf.get_collection(tf.GraphKeys.VARIABLES, scope='gen')
+        des_vars = tf.get_collection(tf.GraphKeys.VARIABLES, scope='des')
+        before_gen = sess.run(gen_vars)
+        before_des = sess.run(des_vars)
+        # Train the generator.
+        sess.run(model.train_gen)
+        after_gen = sess.run(gen_vars)
+        after_des = sess.run(des_vars)
+        # Make sure the generator variables changed.
+        for b,a in zip(before_gen, after_gen):
+            assert (a != b).any()
+        # Make sure descriminator did NOT change.
+        for b,a in zip(before_des, after_des):
+            assert (a == b).all()
 
     def LossDecreases(self):
         """
@@ -29,7 +49,15 @@ class Test_CNN(unittest.TestCase):
         """
         Tests that the loss does no get zero
         """
-        self.assertEqual()
+        in_tensor = tf.placeholder(tf.float32, (None, 3))
+        labels = tf.placeholder(tf.int32, None, 1)
+        model = Model(in_tensor, labels)
+        sess = tf.Session()
+        loss = sess.run(model.loss, feed_dict={
+            in_tensor:np.ones(1, 3),
+            labels:[[1]]
+        })
+        assert loss != 0
 
 if __name__ == "__main__":
     unittest.main()
