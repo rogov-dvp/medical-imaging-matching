@@ -1,4 +1,9 @@
 """
+Comparing images using ORB/SIFT feature detectors
+and structural similarity index. 
+@author: Sreenivas Bhattiprolu
+https://github.com/bnsreenu/python_for_microscopists/blob/master/191_measure_img_similarity.py
+
 Based on original author: Sreenivas Bhattiprolu
 https://youtu.be/16s3Pi1InPU
 https://github.com/bnsreenu/python_for_microscopists/blob/master/191_measure_img_similarity.py
