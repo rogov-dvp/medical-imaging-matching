@@ -29,17 +29,11 @@ class TestDA(unittest.TestCase):
         """
         self.assertEqual()
 
-    def test_show_image(self):
-        """
-        Tests if the images are shown
-        """
-        self.assertEqual()
-
-    def test_fill(self):
-        """
-        Tests if the images are filled
-        """
-        self.assertEqual()
+    # def test_show_image(self):
+    #     """
+    #     Tests if the images are shown
+    #     """
+    #     self.assertEqual()
 
     def test_horizontal_shift(self):
         """
