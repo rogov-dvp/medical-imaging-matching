@@ -14,13 +14,13 @@ import os
 import sys
 import csv
 
-sys.path.append("../../preprocessing/preprocess_data")
+sys.path.append("../preprocessing/")
 from preprocess_data import PreprocessData
 
 sys.path.append("../src/models")
 # TODO: import models
 
-pp_filepath = "../test_kaggle_images/processed_images/"
+pp_filepath = "../test_kaggle_images/augmented_images/"
 
 # FUNCTIONS:
 def query(up_file):
@@ -91,16 +91,18 @@ with open("../data/mismatches.csv", "r") as file:
 for mismatch in mismatches:
     files = []
     for file in mismatch:
-        pp_file = query(file)
-        if len(pp_file) == 0:
+        query_result = query(file)
+        if len(query_result) == 0:
             # pp_file string is empty. Send to preprocessing component
-            filepath = preprocess(pp_file)
+            filepath = preprocess(file)
             if len(filepath) != 0:
                 # add file to array
-                pp_paths.append(pp_file)
+                files.append(file)
+        else:
+            files.append(query_result[0])
 
     # Run Matching similarity algorithm function. We could insert some status_bar.py potentially?
-    percentage = matching_sim()
+    percentage = matching_sim(files)
 
     # Output
     print("Similarity matching percentage: " + str(percentage) + "%")
