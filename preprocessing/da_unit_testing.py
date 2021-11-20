@@ -1,4 +1,5 @@
 import unittest
+import os
 
 from data_augmentation import DataAug
 
@@ -24,12 +25,6 @@ class TestDA(unittest.TestCase):
     # def test_show_image(self):
     #     """
     #     Tests if the images are shown
-    #     """
-    #     self.assertEqual()
-
-    # def test_fill(self):
-    #     """
-    #     Tests if the images are filled
     #     """
     #     self.assertEqual()
 
