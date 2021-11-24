@@ -20,30 +20,32 @@ cache_dir = Path(Path.home()) / ".keras"
 anchor_images_path = cache_dir / "left"
 positive_images_path = cache_dir / "right"
 
+
 def preprocess_image(filename):
-  """
+    """
   Load the specified file as a JPEG image, preprocess it and
   resize it to the target shape.
   """
 
-  image_string = tf.io.read_file(filename)
-  image = tf.image.decode_jpeg(image_string, channels=3)
-  image = tf.image.convert_image_dtype(image, tf.float32)
-  image = tf.image.resize(image, target_shape)
-  return image
+    image_string = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(image_string, channels=3)
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.image.resize(image, target_shape)
+    return image
 
 
 def preprocess_triplets(anchor, positive, negative):
-  """
+    """
   Given the filenames corresponding to the three images, load and
   preprocess them.
   """
 
-  return (
-      preprocess_image(anchor),
-      preprocess_image(positive),
-      preprocess_image(negative),
-  )
+    return (
+        preprocess_image(anchor),
+        preprocess_image(positive),
+        preprocess_image(negative),
+    )
+
 
 # We need to make sure both the anchor and positive images are loaded in
 # sorted order so we can match them together.
@@ -86,6 +88,7 @@ train_dataset = train_dataset.prefetch(8)
 val_dataset = val_dataset.batch(32, drop_remainder=False)
 val_dataset = val_dataset.prefetch(8)
 
+
 def visualize(anchor, positive, negative):
     """Visualize a few triplets from the supplied batches."""
 
@@ -124,6 +127,7 @@ for layer in base_cnn.layers:
         trainable = True
     layer.trainable = trainable
 
+
 class DistanceLayer(layers.Layer):
     """
     This layer is responsible for computing the distance between the anchor
@@ -153,6 +157,7 @@ distances = DistanceLayer()(
 siamese_network = Model(
     inputs=[anchor_input, positive_input, negative_input], outputs=distances
 )
+
 
 class SiameseModel(Model):
     """The Siamese Network model with a custom training and testing loops.
@@ -218,6 +223,7 @@ class SiameseModel(Model):
         # We need to list our metrics here so the `reset_states()` can be
         # called automatically.
         return [self.loss_tracker]
+
 
 siamese_model = SiameseModel(siamese_network)
 siamese_model.compile(optimizer=optimizers.Adam(0.0001))
