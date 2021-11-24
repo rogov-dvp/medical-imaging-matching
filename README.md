@@ -23,4 +23,4 @@ In order to install and run this model you need to:
 
     ```pip install -r requirements-dev.txt```
 3. Navigate to the `src` folder.
-4. Run the model with `python ims/main.py`
+4. Run the model with `python predicting/ims/main.py`
