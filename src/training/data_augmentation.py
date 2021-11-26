@@ -163,7 +163,8 @@ for img_name in image_files:
     saved = cv2.imwrite(
         "../test_images/kaggle/preprocesses_images/hflip_" + img_name, hflip_img
     )
-
+    if saved:
+        print("Horizontal Flip image is saved")
     # v flip
     vflip_img = da.vertical_flip(image, True)
     saved = cv2.imwrite(

@@ -27,3 +27,4 @@ Focus on preparing the data,creating layers, then creating the model, using impl
 - https://keras.io/examples/vision/siamese_network/
 - https://www.pyimagesearch.com/2020/12/07/comparing-images-for-similarity-using-siamese-networks-keras-and-tensorflow/
 - https://towardsdatascience.com/siamese-networks-introduction-and-implementation-2140e3443dee
+- https://towardsdatascience.com/how-to-train-your-siamese-neural-network-4c6da3259463

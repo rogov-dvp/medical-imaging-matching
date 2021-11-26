@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import cv2
 import random
 import tensorflow as tf
 from pathlib import Path
@@ -11,39 +12,53 @@ from tensorflow.keras import losses
 from tensorflow.keras import optimizers
 from tensorflow.keras import metrics
 from tensorflow.keras import Model
+from keras import backend as K
 from tensorflow.keras.applications import resnet
 
 
+# parameters
 target_shape = (200, 200)
 
-cache_dir = Path(Path.home()) / ".keras"
-anchor_images_path = cache_dir / "left"
-positive_images_path = cache_dir / "right"
+# load images dataset
+img_1 = "medical-imaging-matching/test_images_kaggle/images/2016_BC003122_ MLO_L.jpg"
+img_2 = "medical-imaging-matching/test_images_kaggle/images/2016_BC014002_ MLO_L.jpg"
+# cache_dir = Path(Path.home()) / ".keras"
+# anchor_images_path = cache_dir / "left"
+# positive_images_path = cache_dir / "right"
+
 
 def preprocess_image(filename):
-  """
+    """
   Load the specified file as a JPEG image, preprocess it and
   resize it to the target shape.
   """
 
-  image_string = tf.io.read_file(filename)
-  image = tf.image.decode_jpeg(image_string, channels=3)
-  image = tf.image.convert_image_dtype(image, tf.float32)
-  image = tf.image.resize(image, target_shape)
-  return image
+    image_string = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(image_string, channels=3)
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.image.resize(image, target_shape)
+    return image
 
 
 def preprocess_triplets(anchor, positive, negative):
-  """
+    """
   Given the filenames corresponding to the three images, load and
   preprocess them.
   """
 
-  return (
-      preprocess_image(anchor),
-      preprocess_image(positive),
-      preprocess_image(negative),
-  )
+    return (
+        preprocess_image(anchor),
+        preprocess_image(positive),
+        preprocess_image(negative),
+    )
+
+
+# Calculate the euclidean distance.
+def euclid_distance(vectors):
+    x, y = vectors
+    sum_of_square = K.sum(K.square(x - y), axis=1, keepdims=True)
+    return K.sqrt(K.maximum(sum_of_square, K.epsilon()))
+
 
 # We need to make sure both the anchor and positive images are loaded in
 # sorted order so we can match them together.
@@ -86,6 +101,7 @@ train_dataset = train_dataset.prefetch(8)
 val_dataset = val_dataset.batch(32, drop_remainder=False)
 val_dataset = val_dataset.prefetch(8)
 
+
 def visualize(anchor, positive, negative):
     """Visualize a few triplets from the supplied batches."""
 
@@ -124,6 +140,7 @@ for layer in base_cnn.layers:
         trainable = True
     layer.trainable = trainable
 
+
 class DistanceLayer(layers.Layer):
     """
     This layer is responsible for computing the distance between the anchor
@@ -153,6 +170,7 @@ distances = DistanceLayer()(
 siamese_network = Model(
     inputs=[anchor_input, positive_input, negative_input], outputs=distances
 )
+
 
 class SiameseModel(Model):
     """The Siamese Network model with a custom training and testing loops.
@@ -219,6 +237,19 @@ class SiameseModel(Model):
         # called automatically.
         return [self.loss_tracker]
 
+    # Function in order to be able to train triplets
+    def triplet_loss(y_true, y_pred):
+        anchor, positive, negative = (
+            y_pred[:, :emb_size],
+            y_pred[:, emb_size : 2 * emb_size],
+            y_pred[:, 2 * emb_size :],
+        )
+        positive_dist = tf.reduce_mean(tf.square(anchor - positive), axis=1)
+        negative_dist = tf.reduce_mean(tf.square(anchor - negative), axis=1)
+        return tf.maximum(positive_dist - negative_dist + alpha, 0.0)
+
+
+# Training the model
 siamese_model = SiameseModel(siamese_network)
 siamese_model.compile(optimizer=optimizers.Adam(0.0001))
 siamese_model.fit(train_dataset, epochs=10, validation_data=val_dataset)
@@ -232,3 +263,18 @@ anchor_embedding, positive_embedding, negative_embedding = (
     embedding(resnet.preprocess_input(positive)),
     embedding(resnet.preprocess_input(negative)),
 )
+# Do we want to compute the cosine similarity??
+# cosine_similarity = metrics.CosineSimilarity()
+
+# positive_similarity = cosine_similarity(anchor_embedding, positive_embedding)
+# print("Positive similarity:", positive_similarity.numpy())
+
+# negative_similarity = cosine_similarity(anchor_embedding, negative_embedding)
+# print("Negative similarity", negative_similarity.numpy())
+
+
+def cosine_similarity():
+    y_true, y_pred = vecs
+    y_true = K.l2_normalize(y_true, axis=-1)
+    y_pred = K.l2_normalize(y_pred, axis=-1)
+    return K.mean(1 - K.sum((y_true * y_pred), axis=-1))
