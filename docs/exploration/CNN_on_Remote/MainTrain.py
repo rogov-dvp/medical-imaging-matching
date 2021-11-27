@@ -10,15 +10,16 @@ from CNNTripletModel import build_network, build_model
 from BatchBuilder import get_batch_random
 
 
-input_shape = (128,128,1)
+
+img_size = 128
+input_shape = (img_size,img_size,1)
 
 evaluate_every = 5
 n_val = 5
-batch_size = 200
+batch_size = 20
 
 # Adjust
 path = ''
-img_size = 128
 img_rcc = np.load(path + 'img_rcc_' + str(img_size)+'.npy')
 img_lcc = np.load(path + 'img_lcc_' + str(img_size)+'.npy')
 img_rmlo = np.load(path + 'img_rmlo_' + str(img_size)+'.npy')
@@ -37,7 +38,7 @@ data_train = [rcc_data_train, lcc_data_train, rmlo_data_train, lmlo_data_train]
 labels_train = [rcc_labels_train, lcc_labels_train, rmlo_labels_train, lmlo_labels_train]
 
 
-network = build_network(input_shape,embeddingsize=10)
+network = build_network(input_shape,embeddingsize=100)
 network_train = build_model(input_shape,network)
 optimizer = Adam(lr = 0.00006)
 network_train.compile(loss=None,optimizer=optimizer)
@@ -48,7 +49,7 @@ print(network_train.metrics_names)
 
 t_start = time.time()
 n_iteration = 0
-for i in range(30):
+for i in range(3):
     #triplets = get_batch_hard(200,16,16,network)
     triplets = get_batch_random(data_train, labels_train, batch_size)
     loss = network_train.train_on_batch(triplets, None)
