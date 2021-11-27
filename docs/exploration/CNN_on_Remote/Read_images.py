@@ -1,7 +1,13 @@
 import os
 import numpy as np
+from PIL import Image
 
 from skimage.transform import resize
+
+def create_array(path):
+    img = Image.open(path)
+    img_arr = np.asarray(img).reshape(28,28,1)
+    return img_arr
 
 def read_img_to_array(root_dir,size):
     images_rcc = []

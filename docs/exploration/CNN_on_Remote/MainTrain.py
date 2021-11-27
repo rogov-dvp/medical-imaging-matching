@@ -7,19 +7,35 @@ from keras.optimizers import Adam
 from keras.utils import plot_model
 
 from CNNTripletModel import build_network, build_model
-from BatchBuilder import get_batch_random_demo
+from BatchBuilder import get_batch_random
 
 
-input_shape = (28,28,1)
+input_shape = (128,128,1)
 
 evaluate_every = 5
 n_val = 5
-batch_size = 20
+batch_size = 200
 
-data = np.load('/Users/niklastecklenburg/Desktop/Test/Data/images.npy')
-labels = np.load('/Users/niklastecklenburg/Desktop/Test/Data/labels.npy')
+# Adjust
+path = ''
+img_size = 128
+img_rcc = np.load(path + 'img_rcc_' + str(img_size))
+img_lcc = np.load(path + 'img_lcc_' + str(img_size))
+img_rmlo = np.load(path + 'img_rmlo_' + str(img_size))
+img_lmlo = np.load(path + 'img_lmlo_' + str(img_size))
+lab_rcc = np.load(path + 'lab_rcc_' + str(img_size))
+lab_lcc = np.load(path + 'lab_lcc_' + str(img_size))
+lab_rmlo = np.load(path + 'lab_rmlo_' + str(img_size))
+lab_lmlo = np.load(path + 'lab_lmlo_' + str(img_size))
 
-data_train, data_test, labels_train, labels_test = train_test_split(data, labels, test_size=0.2, random_state=42)
+rcc_data_train, rcc_data_test, rcc_labels_train, rcc_labels_test = train_test_split(img_rcc, lab_rcc, test_size=0.2, random_state=42)
+lcc_data_train, lcc_data_test, lcc_labels_train, lcc_labels_test = train_test_split(img_lcc, lab_lcc, test_size=0.2, random_state=42)
+rmlo_data_train, rmlo_data_test, rmlo_labels_train, rmlo_labels_test = train_test_split(img_rmlo, lab_rmlo, test_size=0.2, random_state=42)
+lmlo_data_train, lmlo_data_test, lmlo_labels_train, lmlo_labels_test = train_test_split(img_lmlo, lab_lmlo, test_size=0.2, random_state=42)
+
+data_train = [rcc_data_train, lcc_data_train, rmlo_data_train, lmlo_data_train]
+labels_train = [rcc_labels_train, lcc_labels_train, rmlo_labels_train, lmlo_labels_train]
+
 
 network = build_network(input_shape,embeddingsize=10)
 network_train = build_model(input_shape,network)
@@ -35,7 +51,7 @@ t_start = time.time()
 n_iteration = 0
 for i in range(30):
     #triplets = get_batch_hard(200,16,16,network)
-    triplets = get_batch_random_demo(data_train, labels_train, batch_size)
+    triplets = get_batch_random(data_train, labels_train, batch_size)
     loss = network_train.train_on_batch(triplets, None)
     print(loss)
     # n_iteration += 1
