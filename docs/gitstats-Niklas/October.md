@@ -24,3 +24,7 @@
 - Research triplet loss function which is wiedly used in face recognition
 - experiment with tensorflow and opencv 
 
+## 6) Nov 21 - Build CNN Triplet Loss Skeleton and Prepare Peer Testing
+- Come up with script to train CNN using triplet loss
+- Build script to build triplet from folder structure on GPU server
+- Prepare visualizations for peer testing
