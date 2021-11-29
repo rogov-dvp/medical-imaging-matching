@@ -14,9 +14,9 @@ from BatchBuilder import get_batch_random
 img_size = 128
 input_shape = (img_size,img_size,1)
 
-evaluate_every = 5
+evaluate_every = 10
 n_val = 5
-batch_size = 20
+batch_size = 50
 
 # Adjust
 path = ''
