@@ -50,8 +50,12 @@ def get_batch_random(data_train, data_labels, batch_size):
         triplets[1][i, :, :, :] = data_train[cat][pos_ind, 1, :, :, :]
 
         # Pick negative image of different patient different from different patient
+        counter = 0
         while data_labels[cat][neg_ind] == data_labels[cat][pos_ind]:
             neg_ind = random.randint(0, len(data_train[cat]) - 1)
+            counter += 1
+            if (counter >= 100):
+                return "Could not find negative in 30 tries please check the data and rerun"
         triplets[2][i, :, :, :] = data_train[cat][neg_ind, 0, :, :, :]
         cat += 1
         cat = cat % len(data_train)
