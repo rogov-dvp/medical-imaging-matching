@@ -12,6 +12,7 @@ from siamese2 import SiameseModel
 
 
 class TestSiamese2(unittest.TestCase):
+
     def test_preprocess_image(self):
         """
          Tests images correctly load
@@ -54,11 +55,22 @@ class TestSiamese2(unittest.TestCase):
         Tests that the return type is what we expect and that based on the dummy data we pass in the calculation is correct.
         """
         self.assert
+    
+    
     def test_euclid_distance():
         """
         Tests that the return type is what we expect and that based on the dummy data we pass in the calculation is correct.
         """    
         self.assert
+
+ 
+    def test_siameseModel(self):
+        img1_path = ""
+        img2_path = ""
+        result = get_sim(img1_path, img2_path)
+        self.assertTrue(result <= 1 and result >= 0)  
+       
+
 
 if __name__ == "__main__":
     unittest.main()
