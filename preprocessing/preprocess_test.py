@@ -53,13 +53,13 @@ class TestPreprocess(unittest.TestCase):
         """
         Testing the process file method
         """
-        s = "Image saved here: " + str("test_images_kaggle/processed_images")
+        s = "Image saved here: "
         test = PreprocessData("2016_BC003122_ CC_L.jpg")
         result = test.process_image()
         check = test.check_imgs("test_images_kaggle/processed_images")
         if os.path.exists(check[0]):
             os.remove(check[0])
-        self.assertTrue(s == result)
+        self.assertTrue(s in result)
 
 
 if __name__ == "__main__":

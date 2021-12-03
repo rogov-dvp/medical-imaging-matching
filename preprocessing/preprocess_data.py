@@ -3,6 +3,7 @@ File to preprocess image data.
 """
 import os
 import cv2
+import numpy as np
 
 
 class PreprocessData:
@@ -21,7 +22,7 @@ class PreprocessData:
         # that directory
         for root, dirs, files in os.walk(path):
             for filename in files:
-                if filename == self.filename:
+                if self.filename in filename:
                     temp = os.path.join(root, filename)
                     temp_list.append(temp)
         return temp_list
@@ -49,15 +50,20 @@ class PreprocessData:
         MG_LCC, MG_RCC, MG_RMLO and MG_LMLO need to be saved according to mammogram type
         """
         if "MG_LCC" in self.filename:
-            saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
+            # saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
+            np.save(self.processed_path + "/lcc/" + self.filename, image)
         elif "MG_RCC" in self.filename:
-            saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
+            # saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
+            np.save(self.processed_path + "/rcc/" + self.filename, image)
         elif "MG_RMLO" in self.filename:
-            saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
+            # saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
+            np.save(self.processed_path + "/rmlo/" + self.filename, image)
         elif "MG_LMLO" in self.filename:
-            saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
+            # saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
+            np.save(self.processed_path + "/lmlo/" + self.filename, image)
         else:
-            saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
+            # saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
+            np.save(self.processed_path + "/" + self.filename, image)
 
     def process_image(self):
         """
