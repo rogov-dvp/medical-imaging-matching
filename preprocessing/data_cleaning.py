@@ -7,15 +7,16 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
 # read the data
+class DataClean:
 
-df = pd.read_csv("../test_images_kaggle/images")
-df.shape
+    df = pd.read_csv("../test_images_kaggle/images")
+    df.shape
 # shape of the pixel array
 print(df.shape)
 print(df.dtypes)
 
-#  Clean each image in the folder
-#  Remove duplicates
+# Clean each image in the folder
+# Remove duplicates
 # Handle missing data as a %
 # select numeric and non numeric columns
 df_non_numeric = df.select_dtypes(exclude=[np.number])
