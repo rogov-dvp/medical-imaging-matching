@@ -2,14 +2,16 @@
 File to preprocess image data.
 """
 import os
+import cv2
 
 
 class PreprocessData:
     def __init__(self, filename):
         self.filename = filename
         self.processed_path = "test_images_kaggle/processed_images"
+        self.unprocessed_images = "test_images_kaggle/images"
 
-    def check_processed(self):
+    def check_imgs(self, path):
         """
         Check if the image is processed.
         Return filepath if processed or an empty string if not.
@@ -17,7 +19,7 @@ class PreprocessData:
         dirs = []
         # iterate over files in
         # that directory
-        for root, dirs, files in os.walk(self.processed_path):
+        for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename == self.filename:
                     dirs.append(os.path.join(root, filename))
@@ -27,16 +29,24 @@ class PreprocessData:
         """
         Load image into script
         """
+        return cv2.imread(image_path)
 
     def resize_image(self, image):
         """
         resize the image to 256x256
         """
+        # let's downscale the image using new  width and height
+        down_width = 256
+        down_height = 256
+        down_points = (down_width, down_height)
+        resized_down = cv2.resize(image, down_points, interpolation=cv2.INTER_LINEAR)
+        return resized_down
 
     def save_image(self, image):
         """
         Save image as numpy array
         """
+        saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
 
     def process_image(self):
         """
@@ -44,13 +54,16 @@ class PreprocessData:
         1. Resize image
         2. Save as numpy array into folder based on mammogram type
         """
-        processed_file_path = self.check_processed()
+        processed_file_path = self.check_imgs(self.processed_path)
         if len(processed_file_path) != 0:
             return processed_file_path
         else:
+            unprocessed_imgs = self.check_imgs(self.unprocessed_images)
+            img = self.load_image(unprocessed_imgs[0])
+            resized = self.resize_image(img)
+            self.save_image(resized)
+            return "Image saved here: " + str(self.processed_path)
 
-            return ""
 
-
-preprocess = PreprocessData("2016_BC003122_ CC_L")
+preprocess = PreprocessData("2016_BC003122_ CC_L.jpg")
 preprocess.process_image()
