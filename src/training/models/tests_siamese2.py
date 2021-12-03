@@ -36,10 +36,10 @@ class TestSiamese2(unittest.TestCase):
          """
 
     # self.assertEqual()
-    def test_metrics(self):
-         """
-         Tests that metrics are being listed
-         """
+   # def test_metrics(self):
+    #     """
+     #    Tests that metrics are being listed
+      #   """
 
     # self.assertEqual()
     def test_compute_loss(self):
