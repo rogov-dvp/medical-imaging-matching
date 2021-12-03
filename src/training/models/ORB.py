@@ -19,8 +19,8 @@ img2_path = (
 )
 
 # Distance is how far the program will look for similar regions around keypoints. The higher
-# the distance, the more "lenient" the program will be to matching. Ie. basically distance of 100
-# will always match
+# the distance, the more "lenient" the program will be to matching. distance_input between 0-100. 
+# Ie. basically distance of 100 will always match
 distance_input = 5
 
 # FUNCTIONS start -------------------------------------------
