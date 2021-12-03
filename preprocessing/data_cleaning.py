@@ -20,6 +20,7 @@ print(df.dtypes)
 # Handle missing data as a %
 # select numeric and non numeric columns
 def split_data():
+    
     df_non_numeric = df.select_dtypes(exclude=[np.number])
     non_numeric_cols = df_non_numeric.columns.values
 
@@ -43,5 +44,7 @@ def missing_data():
         pc_missing_df['pc_missing'] = value_list
 
 # input missing values?
+
+# append rows to deal with duplicates 
 
 #  Outliers 

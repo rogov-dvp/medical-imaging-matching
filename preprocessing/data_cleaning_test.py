@@ -19,22 +19,36 @@ if os.path.isfile(PATH) and os.access(PATH, os.R_OK):
 else:
     print("Either the file is missing or not readable")
        
+    
     def test_split_data (self):
          """
         Tests that the split between non-numeric and numeric works.
          """
-         self.assert
+         df = pd.read_csv("../test_images_kaggle/images")
+         result = df.select_dtypes(include=[np.number])
+         self.assertFalse(result)
+    
+    
+    # see that input is not null
     def test_missing_data (self):
          """
         Using dummy data, ensure that the missing values are found and dealt with.
          """
-         self.assert
+        img1_path = "medical-imaging-matching/test_images_kaggle/images/2017_BC011081_ MLO_L.jpg"
+        img2_path = "medical-imaging-matching/test_images_kaggle/images/2017_BC019521_ MLO_L.jpg"
+        result = pc_missing(img1_path,img2_path)
+        self.assertFalse(result,None)
          
+     
      def test_output_data(self):
          """
         Tests for the expected output when reading the file 
          """
-         self.assert     
+        test = DataClean("2016_BC003122_ CC_L.jpg")
+        test_case = ["test_images_kaggle/images/2016_BC003122_ CC_L.jpg"]
+        result = test.check_imgs("test_images_kaggle/images")
+        self.assertEqual(test_case, result)
+           
 
 
 
