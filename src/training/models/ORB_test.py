@@ -22,7 +22,7 @@ class TestORB(unittest.TestCase):
         img1_path = "medical-imaging-matching/test_images_kaggle/images/2017_BC011081_ MLO_L.jpg"
         img2_path = "medical-imaging-matching/test_images_kaggle/images/2017_BC019521_ MLO_L.jpg"
         value = orb_sim(img1_path,img2_path)
-        self.assertTrue(value,0.8530927835051546)
+        self.assertEqual(value,0.8530927835051546)
 
     #testing orb_sim with dummy data. Both images are opposite and should return 0
     def dummyDataDifferent(self):
