@@ -45,8 +45,18 @@ class PreprocessData:
     def save_image(self, image):
         """
         Save image as numpy array
+        MG_LCC, MG_RCC, MG_RMLO and MG_LMLO need to be saved according to mammogram type
         """
-        saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
+        if "MG_LCC" in self.filename:
+            saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
+        elif "MG_RCC" in self.filename:
+            saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
+        elif "MG_RMLO" in self.filename:
+            saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
+        elif "MG_LMLO" in self.filename:
+            saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
+        else:
+            saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
 
     def process_image(self):
         """
