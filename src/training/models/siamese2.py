@@ -188,7 +188,7 @@ class SiameseModel(Model):
         self.margin = margin
         self.loss_tracker = metrics.Mean(name="loss")
 
-    def call(self, inputs):
+    def call(self, inputs): 
         return self.siamese_network(inputs)
 
     def train_step(self, data):
