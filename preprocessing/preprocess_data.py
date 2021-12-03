@@ -16,14 +16,15 @@ class PreprocessData:
         Check if the image is processed.
         Return filepath if processed or an empty string if not.
         """
-        dirs = []
+        temp_list = []
         # iterate over files in
         # that directory
         for root, dirs, files in os.walk(path):
             for filename in files:
                 if filename == self.filename:
-                    dirs.append(os.path.join(root, filename))
-        return dirs
+                    temp = os.path.join(root, filename)
+                    temp_list.append(temp)
+        return temp_list
 
     def load_image(self, image_path):
         """
@@ -73,7 +74,3 @@ class PreprocessData:
             resized = self.resize_image(img)
             self.save_image(resized)
             return "Image saved here: " + str(self.processed_path)
-
-
-preprocess = PreprocessData("2016_BC003122_ CC_L.jpg")
-preprocess.process_image()
