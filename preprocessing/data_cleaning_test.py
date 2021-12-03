@@ -48,14 +48,6 @@ else:
         test_case = ["test_images_kaggle/images/2016_BC003122_ CC_L.jpg"]
         result = test.check_imgs("test_images_kaggle/images")
         self.assertEqual(test_case, result)
-           
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
