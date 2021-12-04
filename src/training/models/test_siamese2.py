@@ -43,26 +43,21 @@ class TestSiamese2(unittest.TestCase):
       #   """
 
     # self.assertEqual()
-    # Triplet loss layer
     def test_compute_loss(self):
         """
          Tests compution of triplet loss
          """
-        triplets = [anch, pos, neg] 
 
-        self.assertTrue(abs(value-expected_value) < 0.0001)
-    #randomly generate a pair of vectors
+    # self.assertEqual()
+
     def test_cosine_similarity(self):
         """
         Tests that the return type is what we expect and that based on the dummy data we pass in the calculation is correct.
         """
-        img1 = ''
-        img2 = ''
-        result = 1 - spatial.distance.cosine(img1, img2)
         self.assert
     
     
-    def test_euclid_distance():
+    def test_euclid_distance(self):
         """
         Tests that the return type is what we expect and that based on the dummy data we pass in the calculation is correct.
         """    
