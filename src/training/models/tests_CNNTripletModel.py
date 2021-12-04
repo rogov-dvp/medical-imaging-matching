@@ -9,43 +9,28 @@ from keras.optimizers import Adam
 from CNNTripletModel import build_network, build_model, TripletLossLayer
 
 class TestCNNTripletModel(unittest.TestCase):
-    # Test that network gets build properly and is type tf
-    def proper_return_type(self):
-        input_shape = (28,28,1)
-        network = build_network(input_shape, embeddingsize=10)
-        
-        value = type(network)
-        expected_value = 'tf'
-        
-        self.assertTrue(value == expected_value)
-        
-    # Test that we can build a model with the three networks implemented
-    def proper_return_type(self):
-        input_shape = (28,28,1)
-        model = build_model(input_shape, embeddingsize=10)
-        
-        value = type(model)
-        expected_value = 'tf'
-        
-        self.assertTrue(value == expected_value)
-
     # Test the Triplet Loss Layer, that it returns proper distance
     def test_Triplet_Loss_Layer_Functionality(self):
-        a_vec = np.zeros(3)
-        p_vec = np.ones(3)
-        n_vec = np.ones(3) * 2
+        input_shape = (28,28,1)
+        anch = np.random.rand(1,28,28,1)
+        pos = np.random.rand(1,28,28,1)
+        neg = np.random.rand(1,28,28,1)
+        triplets = [anch, pos, neg]
         
-        anchor_input = Input(a_vec.shape, name="anchor_input")
-        positive_input = Input(p_vec.shape, name="positive_input")
-        negative_input = Input(n_vec.shape, name="negative_input")
-        loss_layer = TripletLossLayer(alpha=0.2, name="triplet_loss_layer")(
-        [a_vec, p_vec, n_vec])
-        network_train = Model(inputs=[anchor_input, positive_input, negative_input], outputs=loss_layer)
+        network = build_network(input_shape, embeddingsize=10)
+        network_train = build_model(input_shape, network)
+        optimizer = Adam(lr=0.00006)
+        network_train.compile(loss=None, optimizer=optimizer)
         
-        value = network_train.predict([a_vec, p_vec, n_vec])
-        expected_value = abs(a_vec - p_vec) - abs(a_vec - n_vec)
+        value = round(network_train.predict(triplets),5)
+        emebed_a = network(anch)
+        emebed_p = network(pos)
+        emebed_n = network(neg)
+        p_dist = np.sum(np.square(emebed_a - emebed_p), axis=-1)
+        n_dist = np.sum(np.square(emebed_a - emebed_n), axis=-1)
+        expected_value = round(np.sum(np.maximum(p_dist - n_dist + 0.2, 0), axis=0),6)
         
-        self.assertTrue(value == expected_value)
+        self.assertTrue(abs(value-expected_value) < 0.0001)
 
     # Test that model has proper input shape
     def test_input_shape(self):
@@ -56,20 +41,17 @@ class TestCNNTripletModel(unittest.TestCase):
         network_train.compile(loss=None, optimizer=optimizer)
         
         value = network_train.input_shape
-        expected_value = input_shape
-        
-        self.assertTrue(value == expected_value)
+        expected_value = [(None,28,28,1)] * 3
+        for i in range(3):
+            self.assertTrue(value[i] == expected_value[i])
     
      # Test that model has proper output shape
     def test_output_shape(self):
         input_shape = (28,28,1)
         network = build_network(input_shape, embeddingsize=10)
-        network_train = build_model(input_shape, network)
-        optimizer = Adam(lr=0.00006)
-        network_train.compile(loss=None, optimizer=optimizer)
         
-        value = network_train.output_shape
-        expected_value = 10
+        value = network.output_shape
+        expected_value = (None,10)
         
         self.assertTrue(value == expected_value)
     
@@ -88,11 +70,12 @@ class TestCNNTripletModel(unittest.TestCase):
         optimizer = Adam(lr=0.00006)
         network_train.compile(loss=None, optimizer=optimizer)
 
+        loss = []
         for i in range(3):
-            loss = network_train.train_on_batch(triplets, None)
+             loss.append(network_train.train_on_batch(triplets, None))
 
         value = loss[0]- loss[1]
         self.assertTrue(value != 0)
         
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()

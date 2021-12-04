@@ -5,7 +5,7 @@ from BatchBuilder import get_batch_random
 
 class TestBatchBuilder(unittest.TestCase):
     # Test if get_batch random returns proper shape of np.array
-    def proper_return_shape(self):
+    def test_proper_return_shape(self):
         data_train = np.ones((2,2,28,28,1))
         data_train[1] = data_train[1] * 2
         data_labels = np.ones(2)
@@ -17,7 +17,7 @@ class TestBatchBuilder(unittest.TestCase):
         self.assertTrue(value == expected_value)
         
     # Test if get_batch random returns proper shape of list
-    def proper_length_of_output(self):
+    def test_proper_length_of_output(self):
         data_train = np.ones((2,2,28,28,1))
         data_train[1] = data_train[1] * 2
         data_labels = np.ones(2)
@@ -29,7 +29,7 @@ class TestBatchBuilder(unittest.TestCase):
         self.assertTrue(value == expected_value)
 
     # Testing that get_batch random returns empty array if only one class
-    def throws_error_if_only_class(self):
+    def test_throws_error_if_only_class(self):
         "Could not find negative in 30 tries please check the data and rerun"
         data_train = np.ones((2,2,28,28,1))
         data_labels = np.ones(2)
@@ -40,7 +40,7 @@ class TestBatchBuilder(unittest.TestCase):
         self.assertTrue(value == expected_value)
         
     # Testing that get_batch does not mix up positive and negative
-    def keeps_positive_and_negative_seperate(self):
+    def test_keeps_positive_and_negative_seperate(self):
         data_train = np.ones((2,2,28,28,1))
         data_train[1] = data_train[1] * 2
         data_labels = np.ones(2)
@@ -51,5 +51,5 @@ class TestBatchBuilder(unittest.TestCase):
         
         self.assertTrue(value_p != value_n)
     
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()
