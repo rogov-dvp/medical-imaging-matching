@@ -40,5 +40,5 @@ class TestSSIM(unittest.TestCase):
     def img2NotNone(self):
         self.assertTrue(type(img2) != None)
 
-    if __name__ == "__main__":
-        unittest.main()
+if __name__ == "__main__":
+    unittest.main()
