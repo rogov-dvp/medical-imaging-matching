@@ -28,3 +28,9 @@
 - Come up with script to train CNN using triplet loss
 - Build script to build triplet from folder structure on GPU server
 - Prepare visualizations for peer testing
+
+## 7) Nov 28 - Run Test on the GPU Server and implement Testing
+- Set up environment on the GPU Server
+- Run Experiments on the GPU server and adjust code
+- Implement Testing
+- Work on the Peer Testing Report
