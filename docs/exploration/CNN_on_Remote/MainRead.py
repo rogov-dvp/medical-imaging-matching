@@ -2,7 +2,7 @@ import numpy as np
 from Read_images import read_img_to_array
 
 #Adjust
-root_dir = '/Users/niklastecklenburg/Desktop/Test/Data/Folder_Structure'
+root_dir = '/home/capstone/Desktop/CADAnonymized'
 store_dir = ''
 
 img_size = 128
