@@ -11,11 +11,14 @@ Additionally, ORB adds it's own features too. During the calculation of FAST key
 
 The similarity matching occurs when the vector descriptors between images are compared.
 
+### Comparison with CNN
+ORB is a fast model but not accurate.  It does not "learn" and the associated weight (which is manually given) can really change the outcome. A positive is that CNN does not require lots of data. This is why CNN would be preferred. 
 
 ### Imports 
 Possible libraries to consider in the process:
  1. openCV
  
+
 
 
 ### Implementation 
