@@ -1,3 +1,5 @@
+# Based on/Taken from https://keras.io/examples/vision/siamese_network/
+
 import tensorflow as tf
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras import layers, models
