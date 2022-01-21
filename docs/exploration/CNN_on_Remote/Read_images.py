@@ -1,11 +1,14 @@
 import os
 import numpy as np
-import pydicom
+#import pydicom
+from PIL import Image
+
 
 from skimage.transform import resize
 
 def create_array(path):
-    img = pydicom.dcmread(path)
+    #img = pydicom.dcmread(path)
+    img = Image.open(path)
     img_arr = np.asarray(img).reshape(28,28,1)
     return img_arr
 
@@ -34,7 +37,7 @@ def read_img_to_array(root_dir,size):
                 try:
                     img_in = create_array(os.path.join(ses_path, image))/255
                     img_in = resize(img_in, (size, size))
-                    img_in = np.expand_dims(img_in, axis=2)                  
+                    #img_in = np.expand_dims(img_in, axis=2)                  
                     if 'RCC' in image.upper():
                         rcc.append(img_in)
                     elif 'LCC' in image.upper():

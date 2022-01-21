@@ -24,9 +24,7 @@ def get_batch_random_demo(data_train, data_labels, batch_size):
         triplets[0][i,:,:,:] = data_train[pos_ind[i],0,:,:,:]
         triplets[1][i,:,:,:] = data_train[pos_ind[i],1,:,:,:]
         
-        # WE HAVE TO CHECK HERE THAT WE TAKE SAME TYPE???
-        
-        #Pick negative image of different patient different from different patient
+        #Pick negative image of different patient 
         while data_labels[neg_ind[i]] == data_labels[pos_ind[i]]:
             neg_ind[i] -= 1
         triplets[2][i,:,:,:] = data_train[neg_ind[i],0,:,:,:]
@@ -37,6 +35,10 @@ def get_batch_random(data_train, data_labels, batch_size):
     Create batch of APN triplets with a complete random strategy
     """ 
     h, w, c = data_train[0][0,0].shape
+    
+    # Inserted
+    c = 3
+    
     triplets=[np.zeros((batch_size, h, w, c)) for i in range(3)]
     
     cat = random.randint(0,len(data_train)-1)
@@ -45,15 +47,22 @@ def get_batch_random(data_train, data_labels, batch_size):
         neg_ind = random.randint(0, len(data_train[cat])-1)
         
         #Pick one random anchor and positive image
-        triplets[0][i,:,:,:] = data_train[cat][pos_ind,0,:,:,:]
-        triplets[1][i,:,:,:] = data_train[cat][pos_ind,1,:,:,:]
+        triplets[0][i,:,:,0] = data_train[cat][pos_ind,0,:,:,0]
+        triplets[1][i,:,:,0] = data_train[cat][pos_ind,1,:,:,0]
+        triplets[0][i,:,:,1] = data_train[cat][pos_ind,0,:,:,0]
+        triplets[1][i,:,:,1] = data_train[cat][pos_ind,1,:,:,0]
+        triplets[0][i,:,:,2] = data_train[cat][pos_ind,0,:,:,0]
+        triplets[1][i,:,:,2] = data_train[cat][pos_ind,1,:,:,0]
         
         #Pick negative image of different patient different from different patient
         while data_labels[cat][neg_ind] == data_labels[cat][pos_ind]:
             neg_ind = random.randint(0, len(data_train[cat])-1)
-        triplets[2][i,:,:,:] = data_train[cat][neg_ind,0,:,:,:]
+        triplets[2][i,:,:,0] = data_train[cat][neg_ind,0,:,:,0]
+        triplets[2][i,:,:,1] = data_train[cat][neg_ind,0,:,:,0]
+        triplets[2][i,:,:,2] = data_train[cat][neg_ind,0,:,:,0]
         cat += 1
         cat = cat % len(data_train)
+        
     return triplets
 
 # def get_batch_hard(draw_batch_size,hard_batchs_size,norm_batchs_size,network,s="train"):
