@@ -3,16 +3,22 @@ from keras.layers import Conv2D, ZeroPadding2D, Activation, Input, concatenate
 from keras.models import Model
 from keras.datasets import mnist
 
-from keras.layers.normalization import BatchNormalization
+#from keras.layers.normalization import BatchNormalization
 from keras.layers.pooling import MaxPooling2D
 from keras.layers.merge import Concatenate
 from keras.layers.core import Lambda, Flatten, Dense
-from keras.initializers import glorot_uniform,he_uniform
+#from keras.initializers import glorot_uniform,he_uniform
 
-from keras.engine.topology import Layer
+from tensorflow.python.keras.layers import Layer
 from keras.regularizers import l2
 from keras import backend as K
-from keras.utils import plot_model,normalize
+#from keras.utils import plot_model,normalize
+
+from tensorflow.keras import metrics
+import tensorflow as tf
+
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras import layers, models
 
 
 def build_network(input_shape, embeddingsize):
@@ -47,6 +53,24 @@ def build_network(input_shape, embeddingsize):
     #Force the encoding to live on the d-dimentional hypershpere
     network.add(Lambda(lambda x: K.l2_normalize(x,axis=-1)))
     
+    return network
+
+
+def build_VGG16(input_shape, embeddingsize):
+    base_model = VGG16(weights="imagenet", include_top=False, input_shape=input_shape)
+    trainable = False
+    for layer in base_model.layers:
+        if layer.name == "block5_conv1" :
+            trainable = True
+        layer.trainable = trainable
+    
+    network = models.Sequential([base_model])
+    
+    network.add(Flatten())
+    network.add(Dense(embeddingsize, activation=None,
+                   kernel_regularizer=l2(1e-3),
+                   kernel_initializer='he_uniform'))
+    network.add(Lambda(lambda x: K.l2_normalize(x,axis=-1)))
     return network
 
 
@@ -94,3 +118,4 @@ def build_model(input_shape, network, margin=0.2):
     
     # return the model
     return network_train
+
