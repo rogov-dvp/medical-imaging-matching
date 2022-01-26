@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Processed</folder>
+	<filename>145.jpeg</filename>
+	<path>/Users/niklastecklenburg/Desktop/Test/BreastDetector/Data/Processed/145.jpeg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2755</width>
+		<height>3139</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>Breast</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>20</xmin>
+			<ymin>202</ymin>
+			<xmax>2000</xmax>
+			<ymax>2982</ymax>
+		</bndbox>
+	</object>
+</annotation>
