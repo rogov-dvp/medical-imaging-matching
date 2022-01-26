@@ -76,6 +76,20 @@ class TestCNNTripletModel(unittest.TestCase):
 
         value = loss[0]- loss[1]
         self.assertTrue(value != 0)
+
+    # Test
+    def test_(self):
+    
+     # Test
+    def test_(self):
+    
+    
+     # Test
+    def test_(self):
+    
+    
+     # Test
+    def test_(self):
         
 if __name__ == "__main__":
     unittest.main()

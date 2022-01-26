@@ -1,9 +1,12 @@
 import unittest
-
+import matplotlib.pyplot as plt
+import numpy as np
 import tensorflow as tf
 
+from CNN import train_cnn
+ 
 class Test_CNN(unittest.TestCase):
-    def inputShape(self):
+    def inputShape(self): 
         """
         Test that the input shape is as expected
         """

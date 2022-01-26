@@ -1,6 +1,6 @@
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator 
 
 
 def train_cnn(train_datagen, training_images, training_labels, validation_datagen, testing_images, testing_labels):
