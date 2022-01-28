@@ -74,6 +74,12 @@ class Test_CNN(unittest.TestCase):
             labels:[[1]]
         })
         assert loss != 0
+    
+    def test_trained(self):
+        """
+        Tests that the model can be trained
+        """
+    self.assertEqual()
 
 if __name__ == "__main__":
     unittest.main()
