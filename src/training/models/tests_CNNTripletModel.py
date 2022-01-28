@@ -1,4 +1,4 @@
-import unittest
+import unittest 
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -77,19 +77,37 @@ class TestCNNTripletModel(unittest.TestCase):
         value = loss[0]- loss[1]
         self.assertTrue(value != 0)
 
-    # Test
-    def test_(self):
+    # Test that the loss does not go to zero
+    def test_no_zero_loss(self):
+        in_tensor = tf.placeholder(tf.float32, (None, 3))
+        labels = tf.placeholder(tf.int32, None, 1)
+        model = Model(in_tensor, labels)
+        sess = tf.Session()
+        loss = sess.run(model.loss, feed_dict={
+            in_tensor:np.ones(1, 3),
+            labels:[[1]]
+        })
+        assert loss != 0
     
-     # Test
-    def test_(self):
+     # Test Encodings are generated
+    def test_endocdings_generated(self):
+        model = Model(in_tensor, labels)
+        value = network_train.input_shape
+
+        self.assertTrue(value != 0)
+
     
     
-     # Test
-    def test_(self):
+     # Test inputs are connected to outputs
+   # def test_connection(self):
+   #     anch = np.random.rand(10,28,28,1)
+   #     pos = np.random.rand(10,28,28,1)
+   #     neg = np.random.rand(10,28,28,1)
+
+
     
     
-     # Test
-    def test_(self):
+    
         
 if __name__ == "__main__":
     unittest.main()
