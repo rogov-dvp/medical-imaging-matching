@@ -109,7 +109,7 @@ def get_batch_random(data_train, data_labels, batch_size):
 #            embeddingsize : vectorsize used to encode our picture   
 #    '''
 #     # Convolutional Neural Network
-
+  
 
 
 
