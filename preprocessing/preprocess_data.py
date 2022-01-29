@@ -9,8 +9,8 @@ import numpy as np
 class PreprocessData:
     def __init__(self, filename):
         self.filename = filename
-        self.processed_path = "test_images_kaggle/processed_images"
-        self.unprocessed_images = "test_images_kaggle/images"
+        self.processed_path = "../test_images_kaggle/processed_images"
+        self.unprocessed_images = "../test_images_kaggle/images"
 
     def check_imgs(self, path):
         """
@@ -21,9 +21,9 @@ class PreprocessData:
         # iterate over files in
         # that directory
         for root, dirs, files in os.walk(path):
-            for filename in files:
-                if self.filename in filename:
-                    temp = os.path.join(root, filename)
+            for file in files:
+                if self.filename in file:
+                    temp = os.path.join(root, file)
                     temp_list.append(temp)
         return temp_list
 
@@ -49,21 +49,22 @@ class PreprocessData:
         Save image as numpy array
         MG_LCC, MG_RCC, MG_RMLO and MG_LMLO need to be saved according to mammogram type
         """
-        if "MG_LCC" in self.filename:
+        name = self.filename.split(".")[0]
+        if "CC" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
-            np.save(self.processed_path + "/lcc/" + self.filename, image)
-        elif "MG_RCC" in self.filename:
+            np.save(self.processed_path + "/lcc/" + name, image)
+        elif "CC" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
-            np.save(self.processed_path + "/rcc/" + self.filename, image)
-        elif "MG_RMLO" in self.filename:
+            np.save(self.processed_path + "/rcc/" + name, image)
+        elif "MLO" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
-            np.save(self.processed_path + "/rmlo/" + self.filename, image)
-        elif "MG_LMLO" in self.filename:
+            np.save(self.processed_path + "/rmlo/" + name, image)
+        elif "MLO" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
-            np.save(self.processed_path + "/lmlo/" + self.filename, image)
+            np.save(self.processed_path + "/lmlo/" + name, image)
         else:
             # saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
-            np.save(self.processed_path + "/" + self.filename, image)
+            np.save(self.processed_path + "/" + name, image)
 
     def process_image(self):
         """
