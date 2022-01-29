@@ -41,7 +41,7 @@ class PreprocessData:
         down_width = 256
         down_height = 256
         down_points = (down_width, down_height)
-        resized_down = cv2.resize(image, down_points, interpolation=cv2.INTER_LINEAR)
+        resized_down = cv2.resize(image, down_points, interpolation=cv2.INTER_AREA)
         return resized_down
 
     def save_image(self, image):

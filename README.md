@@ -21,6 +21,6 @@ In order to install and run this model you need to:
 1. Clone this repository.
 2. Install the requirements for the model with:
 
-    ```pip install -r requirements-dev.txt```
+    ```pip install -r requirements_dev.txt```
 3. Navigate to the `src` folder.
 4. Run the model with `python predicting/ims/main.py`
