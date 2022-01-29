@@ -24,7 +24,7 @@ def build_network(input_shape, embeddingsize):
     """
     # Convolutional Neural Network
     network = Sequential()
-    network.add(
+    network.add( 
         Conv2D(
             128,
             (7, 7),
@@ -124,6 +124,6 @@ def build_model(input_shape, network, margin=0.2):
     network_train = Model(
         inputs=[anchor_input, positive_input, negative_input], outputs=loss_layer
     )
-
+ 
     # return the model
     return network_train
