@@ -19,6 +19,10 @@
 - Each loop builds a new batch in order to process
 - Mant strategies possible that all have various impacts on the training speeds  
 
+## Storing the embeddings 
+-  using call back function or should seconding be added in order to build dictionary to keep track of embedding??
+-  
+
 ## Sources 
 -  https://medium.com/@crimy/one-shot-learning-siamese-networks-and-triplet-loss-with-keras-2885ed022352
 -  https://towardsdatascience.com/image-similarity-using-triplet-loss-3744c0f67973
