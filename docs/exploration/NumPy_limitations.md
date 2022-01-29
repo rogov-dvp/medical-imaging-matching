@@ -1,5 +1,5 @@
 ## Limitations with NumPy Files 
-Explorartion into limitations and difficuktues we may encounter with Numpy files
+Exploration into limitations and difficulties we may encounter with Numpy files
 
 ## What are NumPy Files
 A NumPy array file created by the Python software package with the NumPy library installed is known as an NPY file. It contains a NumPy (NPY) array.
@@ -19,7 +19,7 @@ A NumPy array file created by the Python software package with the NumPy library
 
 
 ## Limitations 
-- Require a contiguous memory allocation: When data is stored in contiguous memory regions, insertion and deletion operations become expensive because they require shifting.
+- Require a continuous memory allocation: When data is stored in continuous memory regions, insertion and deletion operations become expensive because they require shifting.
 - Lack of cross platform support
 - problems could occur whencomparing values
 - Must be contained in a single file
