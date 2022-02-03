@@ -3,7 +3,7 @@
 1. Worked on getting a detection of 50 test mammograms.
   - January 28, 2021
   - Issue #1235
-  - I have the code mostly set except I now need to find the dimensions of the detections and cut it out with pillow or opencv. My current issue is that my M1 macbook doesnt run tensorflow. I written down the initial steps I took when doing this just in case:   
+  - I have the code mostly set except I now need to find the dimensions of the detections and cut it out with pillow or opencv. My current issue is that my M1 macbook doesnt run tensorflow. I written down the initial steps I took when doing this just in case. I didn't pull the code to our main branch since it's a lot of code and images:   
 
 https://www.youtube.com/watch?v=IOI0o3Cxv9Q
 
