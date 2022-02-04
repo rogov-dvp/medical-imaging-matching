@@ -26,6 +26,21 @@ evaluate_save_every = 5
 batch_size = 50
 test_batch_size = 20
 
+# from read_preprocessed import read_imgs
+
+# # Adjust
+# # root_dir = '/home/capstone/Desktop/CADAnonymized'
+# # root_dir = './Data'
+# processed_dir = "../../../test_images_kaggle/processed_images"
+# root_dir = "../../../test_images_kaggle/images"
+# store_dir = ""
+
+# img_size = 28
+# # img_rcc,img_lcc,img_rmlo,img_lmlo,lab_rcc,lab_lcc,lab_rmlo,lab_lmlo = read_img_to_array(root_dir, img_size)
+# img_rcc, img_lcc, img_rmlo, img_lmlo, lab_rcc, lab_lcc, lab_rmlo, lab_lmlo = read_imgs(
+#     root_dir, processed_dir, img_size
+# )
+
 # Adjust
 path = ""
 img_rcc = np.load(path + "img_rcc_" + str(img_size) + ".npy")
