@@ -15,8 +15,6 @@ img_rcc, img_lcc, img_rmlo, img_lmlo, lab_rcc, lab_lcc, lab_rmlo, lab_lmlo = rea
     root_dir, processed_dir, img_size
 )
 
-print(img_rcc)
-
 # np.save(store_dir + 'img_rcc_' + str(img_size),img_rcc)
 # np.save(store_dir + 'img_lcc_' + str(img_size),img_lcc)
 # np.save(store_dir + 'img_rmlo_' + str(img_size),img_rmlo)

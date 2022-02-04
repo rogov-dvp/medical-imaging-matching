@@ -13,7 +13,7 @@ Currently, we are using `OpenCV` or `cv2` when importing to resize the images.
 1. `cv2.INTER_AREA`: This is used when we need to shrink an image. Uses pixel area relation for resampling. When used for zooming it uses the `INTER_NEAREST` method.
 2. `cv2.INTER_CUBIC`: This is slow but more efficient. This uses bicubic interpolation for resizing the image. When resizing and interpolating new pixels, this method acts on the 4x4 neighbouring pixels of an image. It then takes the weighted average of the 16 pixels to create the new interpolated pixel.
 3. `cv2.INTER_LINEAR`: This is primarily used when zooming is required. This is the default interpolation technique in `OpenCV`. This method is somewhat similar to the `INTER_CUBIC` intepolation but it uses 2x2 neighoring pixels to get the weighted average for the interpolated pixel.
-4. `cv2.INTERNEAREST`: This method uses the nearest neighbour concept for interpolation. This is one of the simplest methods, using only one neighboring pixel from the image for interpolation.
+4. `cv2.INTER_NEAREST`: This method uses the nearest neighbour concept for interpolation. This is one of the simplest methods, using only one neighboring pixel from the image for interpolation.
 
 Another thing we need to keep in mind is that we must be aware on if we need to keep in mind the original aspect ration of the image.
 
