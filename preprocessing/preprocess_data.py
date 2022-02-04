@@ -7,10 +7,12 @@ import numpy as np
 
 
 class PreprocessData:
-    def __init__(self, filename):
+    def __init__(self, filename, processed_path, unprocessed_path):
         self.filename = filename
-        self.processed_path = "../test_images_kaggle/processed_images"
-        self.unprocessed_images = "../test_images_kaggle/images"
+        # self.processed_path = "../test_images_kaggle/processed_images"
+        # self.unprocessed_images = "../test_images_kaggle/images"
+        self.processed_path = processed_path
+        self.unprocessed_images = unprocessed_path
 
     def check_imgs(self, path):
         """
@@ -80,4 +82,4 @@ class PreprocessData:
             img = self.load_image(unprocessed_imgs[0])
             resized = self.resize_image(img)
             self.save_image(resized)
-            return "Image saved here: " + str(self.processed_path)
+            return str(self.processed_path)
