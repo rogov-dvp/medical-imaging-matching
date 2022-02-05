@@ -34,3 +34,9 @@
 - Run Experiments on the GPU server and adjust code
 - Implement Testing
 - Work on the Peer Testing Report
+
+
+## 8) Feb 4 - Work on Gradient Explosion
+- Double check the Network and the inputed data (found some issue there I could resolve)
+- run further test, not yet working
+- experiment with reduced problem to find out whether the problem comes from parameters or if it is a code issue
