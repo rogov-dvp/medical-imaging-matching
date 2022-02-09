@@ -102,3 +102,4 @@ def get_batch_random(data_train, data_labels, batch_size):
     
 #     return triplets
 
+ 
