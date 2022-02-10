@@ -18,7 +18,7 @@
 
 
 #### BLockers/Surprises
-- Compatibility issues with tensor flow versions
+- Compatibility issues with tensor flow versions varying
 - Gradient Issue, now know where it is coming from. CNN says there is no real loss for the embedding
 
 
@@ -29,7 +29,7 @@
 - Adjust cost function 
 - Work on gradient issue
 - Keep working on breast detection algorithm
-- unit testing for batch building and explore the integration
+- unit testing for batch building and exploration into the integration
 
 
 
