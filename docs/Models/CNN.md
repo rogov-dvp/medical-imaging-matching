@@ -5,7 +5,7 @@ To run the model keras and (pydot) need to be installed.
 
 ## Model
 ### Nov 2021
-The Model is for now a realtiv simple CNN with three convolutional layers and small input size as well as small embedding vectors. These dimension are flexible and can be adjusted once we get to the actual problem. For now it has been mainly used with the MNIST data set to see whether it actually works.
+The Model is for now a realtively simple CNN with three convolutional layers and small input size as well as small embedding vectors. These dimension are flexible and can be adjusted once we get to the actual problem. For now it has been mainly used with the MNIST data set to see whether it actually works.
 
 ### Jan 2022
 The Model has been adjust in its implementation of the Triplet Loss functionality with Siamese Networks (that share the weights and structure). The Adjustments were required to be able to feed the loss back into the model for training the network. The adjustments are based on [Keras](https://keras.io/examples/vision/siamese_network/).
