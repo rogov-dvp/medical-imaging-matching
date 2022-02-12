@@ -1,0 +1,26 @@
+<annotation>
+	<folder>imagesMamm</folder>
+	<filename>2016_BC003122_ MLO_L.jpg</filename>
+	<path>/Users/alexa/Documents/UBCO/COSC499/RealTimeObjectDetection/Tensorflow/workspace/images/imagesMamm/2016_BC003122_ MLO_L.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>2816</width>
+		<height>3584</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>breast</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1</xmin>
+			<ymin>1082</ymin>
+			<xmax>1883</xmax>
+			<ymax>2965</ymax>
+		</bndbox>
+	</object>
+</annotation>
