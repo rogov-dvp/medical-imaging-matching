@@ -2,7 +2,7 @@
 - Exploration into implementing batch building methods in order to return not only loss but all embeddings. Finding images from previous batches and picking ones with most similarity.
 
 - Training the CNN model involves giving a batch of samples to the model. For an arbitrary sample, one can obtain the embedding vector.
-
+ 
 ## Embeddings
 - Taking input and creating a smaller representation such as a vector
 - Similar images produce small distance between the two
