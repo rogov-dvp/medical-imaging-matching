@@ -12,3 +12,8 @@
 - Februrary 11,2022
 - Issue #255
 - Exploration into how to implement integration testing for batch building, using some remote testing methods. As is there is an issue of running into strange weights.
+
+4. Addition of unit tests for batch builder
+- Februrary 11,2022
+- Issue #271 
+- Write unit tests for batch builder 
