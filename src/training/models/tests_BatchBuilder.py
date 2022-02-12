@@ -7,7 +7,7 @@ class TestBatchBuilder(unittest.TestCase):
     # Test if get_batch random returns proper shape of np.array
     def test_proper_return_shape(self):
         data_train = [np.ones((2,2,28,28,1))]
-        data_train[0][1] = data_train[0][1] * 2
+        data_train[0][1] = data_train[0][1] * 2 
         data_labels = [np.asarray([1,2])]
         
         value = get_batch_random(data_train, data_labels, 10)[0].shape
