@@ -43,7 +43,31 @@ So, we want $d(A, N)$ to be much bigger than $d(A, P)$. To achieve this, we coul
 
 ### Triplet Loss Function Definition
 
-The triplet loss function
+The triplet loss function is defined on triples of images as we mentioned before. The positive of examples of the same patient and the negatives are examples of a different patient. The loss will be defined as follows:
+
+$$L(A, P, N) = max(||f(A)-f(P)||^2 - ||f(A)-f(N)||^2, 0)$$
+
+As long as we achieve the goal of making $||f(A)-f(P)||^2 - ||f(A)-f(N)||^2$ less than or equal to zero. On the other hand, if this is greater than zero then we take the max so we get a positive loss.
+
+This is how we define the loss on a single triplet, and the overall cost function for our NN can be a sum over a training set of these individual losses on different triplets:
+
+$$J = \sum_{i = 1}^{M} h(A^{(i)}, P^{(i)}, N^{(i)})$$
+
+Let’s imagine that we have a training set of 10,000 pictures with a 1000 different persons. Then, we have to take our 10,000 pictures and use them to generate triplets. Next, we train our learning algorithm using a gradient descent on cost function that we have defined previously. After which we can apply it to our problem.
+
+#### **Choosing the triplets**
+
+Choosing randomly while it could work, there is a high chance that $||f(A)-f(P)||^2 - ||f(A)-f(N)||^2$ will be much bigger than the margin $\alpha$ then that term on the left, and so the NN won't learn much. We actually want to form our triplets by choosing "hard cases" to train on.
+
+In particular, we want all tripletes to satisfy this constraint ie. triplets where $d(A, P)$ and $d(A, N)$ are close.
+
+$$d(A, P) + \alpha \le d(A, N)$$
+
+$$d(A, P) \approx d(A, N)$$
+
+In that case the learning algorithm has to try extra hard to take $d(A, N) and push it up. Choosing hard cases to train on increases the computational efficiency of our learning program. if we choose the triplets randomly then too many triplets would be really easy, and so gradient descent won’t do anything because neural network will just get them right pretty much all the time. So, with choosing hard triplets, the gradient descent procedure has to do some work to try to push $d(A, P)$ and $d(A, N)$ away from each other.
+
+To train the loss function we need to use the training set of Anchor, Positive and Negative triples. Then, we will use gradient descent to try to minimize the cost function 𝐽 that we defined earlier. It will have the effect of back propagating to all the parameters of the neural network in order to learn an encoding. Hence, a function 𝑑 of two images will be small when these two images are of the same patient. However, they will be large when these are two images of different patients.
 
 ## Sources
 
