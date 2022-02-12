@@ -7,10 +7,12 @@ import numpy as np
 
 
 class PreprocessData:
-    def __init__(self, filename):
+    def __init__(self, filename, processed_path, unprocessed_path):
         self.filename = filename
-        self.processed_path = "test_images_kaggle/processed_images"
-        self.unprocessed_images = "test_images_kaggle/images"
+        # self.processed_path = "../test_images_kaggle/processed_images"
+        # self.unprocessed_images = "../test_images_kaggle/images"
+        self.processed_path = processed_path
+        self.unprocessed_images = unprocessed_path
 
     def check_imgs(self, path):
         """
@@ -21,9 +23,9 @@ class PreprocessData:
         # iterate over files in
         # that directory
         for root, dirs, files in os.walk(path):
-            for filename in files:
-                if self.filename in filename:
-                    temp = os.path.join(root, filename)
+            for file in files:
+                if self.filename in file:
+                    temp = os.path.join(root, file)
                     temp_list.append(temp)
         return temp_list
 
@@ -41,7 +43,7 @@ class PreprocessData:
         down_width = 256
         down_height = 256
         down_points = (down_width, down_height)
-        resized_down = cv2.resize(image, down_points, interpolation=cv2.INTER_LINEAR)
+        resized_down = cv2.resize(image, down_points, interpolation=cv2.INTER_AREA)
         return resized_down
 
     def save_image(self, image):
@@ -49,21 +51,22 @@ class PreprocessData:
         Save image as numpy array
         MG_LCC, MG_RCC, MG_RMLO and MG_LMLO need to be saved according to mammogram type
         """
-        if "MG_LCC" in self.filename:
+        name = self.filename.split(".")[0]
+        if "CC" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
-            np.save(self.processed_path + "/lcc/" + self.filename, image)
-        elif "MG_RCC" in self.filename:
+            np.save(self.processed_path + "/lcc/" + name, image)
+        elif "CC" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
-            np.save(self.processed_path + "/rcc/" + self.filename, image)
-        elif "MG_RMLO" in self.filename:
+            np.save(self.processed_path + "/rcc/" + name, image)
+        elif "MLO" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
-            np.save(self.processed_path + "/rmlo/" + self.filename, image)
-        elif "MG_LMLO" in self.filename:
+            np.save(self.processed_path + "/rmlo/" + name, image)
+        elif "MLO" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
-            np.save(self.processed_path + "/lmlo/" + self.filename, image)
+            np.save(self.processed_path + "/lmlo/" + name, image)
         else:
             # saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
-            np.save(self.processed_path + "/" + self.filename, image)
+            np.save(self.processed_path + "/" + name, image)
 
     def process_image(self):
         """
@@ -79,4 +82,4 @@ class PreprocessData:
             img = self.load_image(unprocessed_imgs[0])
             resized = self.resize_image(img)
             self.save_image(resized)
-            return "Image saved here: " + str(self.processed_path)
+            return str(self.processed_path)

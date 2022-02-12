@@ -20,7 +20,9 @@ from preprocess_data import PreprocessData
 sys.path.append("../src/models")
 # TODO: import models
 
-pp_filepath = "../test_kaggle_images/augmented_images/"
+pp_filepath = "../test_kaggle_images/processed_images/"
+processed_path = "../test_images_kaggle/processed_images"
+unprocessed_images = "../test_images_kaggle/images"
 
 # FUNCTIONS:
 def query(up_file):
@@ -55,8 +57,10 @@ def preprocess(up_file):
   """
     pp_file = ""
     print("querying " + str(up_file))
-    ppd = PreprocessData(up_file)
+    ppd = PreprocessData(up_file, processed_path, unprocessed_images)
     result = ppd.process_image()
+    print(result)
+    print(type(result))
     if result.lower() != up_file.lower():
         pp_file = result
     return pp_file

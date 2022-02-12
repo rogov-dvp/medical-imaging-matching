@@ -12,16 +12,16 @@ import cv2
 # TODO: PARAMETERS TO SET (INPUT):
 # image paths:
 img1_path = (
-    "medical-imaging-matching/test_images_kaggle/images/2016_BC003122_ MLO_L.jpg"
+    "/Users/alexa/Documents/UBCO/COSC499/medical-imaging-matching/test_images_kaggle/images/2016_BC003122_ MLO_L.jpg"
 )
 img2_path = (
-    "medical-imaging-matching/test_images_kaggle/images/2016_BC014002_ MLO_L.jpg"
+    "/Users/alexa/Documents/UBCO/COSC499/medical-imaging-matching/test_images_kaggle/images/2017_BC011081_ MLO_L.jpg"
 )
 
 # Distance is how far the program will look for similar regions around keypoints. The higher
 # the distance, the more "lenient" the program will be to matching. distance_input between 0-100. 
 # Ie. basically distance of 100 will always match
-distance_input = 5
+distance_input = 0.5
 
 # FUNCTIONS start -------------------------------------------
 # Works well with images of different dimensions

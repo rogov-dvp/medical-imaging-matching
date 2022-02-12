@@ -14,6 +14,8 @@ Possible libraries to consider in the process:
  1. openCV
  2. skimage
 
+### Comparison with CNN
+SSIM is a fast model but not accurate.  SSIM compares the images based on light and contrast of two images. A positive is that SSIm only requires two images which is possibly the maximum images we may have. However, the accuracy is more important and is why CNN would be preferred. 
 
 ### Implementation 
 Input two images (preferably the same size) and compare them using the imported method.

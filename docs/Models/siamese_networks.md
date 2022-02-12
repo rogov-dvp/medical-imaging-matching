@@ -20,7 +20,7 @@ Possible libraries to consider in the process:
 4. Triplet loss  
 
 ### Comparison to CNN
- Siamese networks in comparison to CNN networks are very similar when it comes to the architechture, the main difference being where the CNN includes more layers. Siamese networks require a ton of labelled data where as CNN does not. CNN is more computationally efficient, and requuires less training than siamese networks. Overall CNN is preferred for our project.
+ Siamese networks in comparison to CNN networks are very similar when it comes to the architecture, the main difference being where the CNN includes more layers. Siamese networks require a ton of labelled data where as CNN does not. CNN is more computationally efficient, and requires less training than siamese networks. Overall CNN is preferred for our project.
 
 
 ### Implementation 
