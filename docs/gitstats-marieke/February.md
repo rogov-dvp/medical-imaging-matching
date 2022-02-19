@@ -17,3 +17,14 @@
 - Februrary 11,2022
 - Issue #271 
 - Write unit tests for batch builder 
+
+5. Finalize unit testing for Batch Builder
+- Februrary 18,2022
+- Issue #271
+- Finalize the unit tests for the batch builder
+
+
+6. Work on implementing batch builder on remote server
+- Februrary 18,2022
+- Issue #286
+- Running tests on remote server in order to work on the integration of batch builder
