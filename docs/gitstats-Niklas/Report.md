@@ -45,3 +45,9 @@
 - Train CNN in Siamese Similarity Setup on easy batch
 - Improve performance with hard batch finding function
 - research further improvement opportunities
+
+
+## 10) Mar 4 - Research and Demo Video
+- Further investigate Learning problems
+- research medical image neural nets to use for transfer learning
+- Work on the demo video/presentation
