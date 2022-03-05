@@ -45,3 +45,7 @@
 - Train CNN in Siamese Similarity Setup on easy batch
 - Improve performance with hard batch finding function
 - research further improvement opportunities
+
+## 11) Demo Video
+- Create slides for CNN Demo
+- Record Intro and CNN Video for Demo
