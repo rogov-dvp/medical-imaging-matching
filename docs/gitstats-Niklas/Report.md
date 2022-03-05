@@ -46,6 +46,11 @@
 - Improve performance with hard batch finding function
 - research further improvement opportunities
 
+
+## 10) Mar 4 - Research and Demo Video
+- Further investigate Learning problems
+- research medical image neural nets to use for transfer learning
+
 ## 11) Demo Video
 - Create slides for CNN Demo
 - Record Intro and CNN Video for Demo
