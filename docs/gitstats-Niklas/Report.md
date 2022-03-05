@@ -50,4 +50,7 @@
 ## 10) Mar 4 - Research and Demo Video
 - Further investigate Learning problems
 - research medical image neural nets to use for transfer learning
-- Work on the demo video/presentation
+
+## 11) Demo Video
+- Create slides for CNN Demo
+- Record Intro and CNN Video for Demo
