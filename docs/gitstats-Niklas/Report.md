@@ -34,3 +34,23 @@
 - Run Experiments on the GPU server and adjust code
 - Implement Testing
 - Work on the Peer Testing Report
+
+
+## 8) Feb 4 - Work on Gradient Explosion
+- Double check the Network and the inputed data (found some issue there I could resolve)
+- run further test, not yet working
+- experiment with reduced problem to find out whether the problem comes from parameters or if it is a code issue
+
+## 9) Feb 18 - Improve CNN 
+- Train CNN in Siamese Similarity Setup on easy batch
+- Improve performance with hard batch finding function
+- research further improvement opportunities
+
+
+## 10) Mar 4 - Research and Demo Video
+- Further investigate Learning problems
+- research medical image neural nets to use for transfer learning
+
+## 11) Demo Video
+- Create slides for CNN Demo
+- Record Intro and CNN Video for Demo
