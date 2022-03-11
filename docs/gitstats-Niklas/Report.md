@@ -54,3 +54,7 @@
 ## 11) Demo Video
 - Create slides for CNN Demo
 - Record Intro and CNN Video for Demo
+
+## 12) Peer Report
+- Add Overview section, describing the general purpose of the project and our approach
+- Add detailed infos to the CNNs/Loss function and Siamese setup, we are using.
