@@ -12,3 +12,8 @@
 - Mar 11, 2022
 - Issue #317
 - Wrote the peer evaluations for Peer Evaluations #3
+
+7. Wrote the User Interaction and Breast Detection sections of the Peer Report
+- Mar 11, 2022
+- Issue #318
+- Wrote the User Interaction and Breast Detection sections of the Peer Report #3. I put in more detail than in the video in respect of how these features will work and why we need them.
