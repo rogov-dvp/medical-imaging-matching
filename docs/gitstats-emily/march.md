@@ -15,12 +15,14 @@ Refer to git commits for the rest of the breakdowns.
    - Recorded voice over
    - Edited video for Prototype #2
 
+2) Week of March 7th, 2022
+
+   - Continued testing of preprocessing on remote server
+   - Continued testing the integration between preprocessing and CNN on remote server
+   - Wrote up preprocessing documentation for peer testing report
+   - Edited peer testing report
+   - Performed peer evaluation
+
 Notes:
-
-The research on embedding needs the background research and documentation done on the triplet loss function for better understanding. Issue will be adjusted and closed to reflect that. A new issue next week will be opened regarding embedding and further research.
-
-Further research has been done into our specific issue, but we need more research into how using mammograms instead of the images typically used affects our model.
-
-Work on powerpoint and edited together video.
 
 Gitstats will not reflect work done on remote server.
