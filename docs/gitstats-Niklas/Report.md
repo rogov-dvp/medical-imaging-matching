@@ -58,3 +58,9 @@
 ## 12) Peer Report
 - Add Overview section, describing the general purpose of the project and our approach
 - Add detailed infos to the CNNs/Loss function and Siamese setup, we are using.
+
+## 13) Mar 11 - Training on Simpler Dataset
+- load in omingolet dataset in jpeg format in  anchor and positive folder structure to test the keras implementation
+- training is currently in progress, report of results and insights follows asap
+- also worked on the peer/team evalualtion
+
