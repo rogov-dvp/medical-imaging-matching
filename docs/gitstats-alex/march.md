@@ -7,3 +7,8 @@
 - March 4, 2022
 - Issue #308
 - I recorded the user interaction and breast detection section for prototype video #2
+
+6. Wrote my Peer Evaluations 
+- Mar 11, 2022
+- Issue #317
+- Wrote the peer evaluations for Peer Evaluations #3
