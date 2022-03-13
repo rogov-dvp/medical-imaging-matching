@@ -555,8 +555,6 @@ def faceRecoModel(input_shape):
         
     return model
 
-!unzip archive.zip -d archive
-
 # Commented out IPython magic to ensure Python compatibility.
 # Import Keras and other Deep Learning dependencies
 import tensorflow as tf
@@ -594,9 +592,6 @@ from sklearn.utils import shuffle
 # %reload_ext autoreload
 
 #np.set_printoptions(threshold=np.nan)
-
-from google.colab import drive
-drive.mount('/content/drive')
 
 # Check whether GPU is being or not
 from tensorflow.python.client import device_lib
@@ -949,6 +944,7 @@ class Siamese_Loader:
     
 
 loader = Siamese_Loader(data_path)
+print('Loaded...')
 
 def concat_images(X):
     """Concatenates a bunch of images into a big matrix for plotting purposes."""
@@ -983,8 +979,8 @@ plot_oneshot_task(pairs)
 
 weights_path_2 = os.path.join(data_path, "model_weights.h5")
 
-evaluate_every = 5000 # interval for evaluating on one-shot tasks
-loss_every = 20 # interval for printing loss (iterations)
+evaluate_every = 100 # interval for evaluating on one-shot tasks
+loss_every = 10 # interval for printing loss (iterations)
 batch_size = 32
 n_iter = 20000
 N_way = 20 # how many classes for testing one-shot tasks>
@@ -996,8 +992,8 @@ t_start = time.time()
 for i in range(1, n_iter):
     (inputs,targets)=loader.get_batch(batch_size)
     loss=model.train_on_batch(inputs,targets)
-    print("\n ------------- \n")
-    print("Loss: {0}".format(loss)) 
+    # print("\n ------------- \n")
+    # print("Loss: {0}".format(loss)) 
     if i % evaluate_every == 0:
         print("Time for {0} iterations: {1}".format(i, time.time()-t_start))
         val_acc = loader.test_oneshot(model,N_way,n_val,verbose=True)
@@ -1009,80 +1005,3 @@ for i in range(1, n_iter):
     
     if i % loss_every == 0:
         print("iteration {}, training loss: {:.2f},".format(i,loss))
-
-        
-weights_path_2 = os.path.join(data_path, "model_weights.h5")
-model.load_weights(weights_path_2)
-
-"""### Testing pipeline """
-
-def nearest_neighbour_correct(pairs,targets):
-    """returns 1 if nearest neighbour gets the correct answer for a one-shot task
-        given by (pairs, targets)"""
-    L2_distances = np.zeros_like(targets)
-    for i in range(len(targets)):
-        L2_distances[i] = np.sum(np.sqrt(pairs[0][i]**2 - pairs[1][i]**2))
-    if np.argmin(L2_distances) == np.argmax(targets):
-        return 1
-    return 0
-
-
-def test_nn_accuracy(N_ways,n_trials,loader):
-    """Returns accuracy of one shot """
-    print("Evaluating nearest neighbour on {} unique {} way one-shot learning tasks ...".format(n_trials,N_ways))
-
-    n_right = 0
-    
-    for i in range(n_trials):
-        pairs,targets = loader.make_oneshot_task(N_ways,"val")
-        correct = nearest_neighbour_correct(pairs,targets)
-        n_right += correct
-    return 100.0 * n_right / n_trials
-
-
-ways = np.arange(1, 30, 2)
-resume =  False
-val_accs, train_accs,nn_accs = [], [], []
-trials = 450
-for N in ways:
-    val_accs.append(loader.test_oneshot(model, N,trials, "val", verbose=True))
-    train_accs.append(loader.test_oneshot(model, N,trials, "train", verbose=True))
-    nn_accs.append(test_nn_accuracy(N,trials, loader))
-    
-#plot the accuracy vs num categories for each
-plt.plot(ways, val_accs, "m")
-plt.plot(ways, train_accs, "y")
-plt.plot(ways, nn_accs, "c")
-
-plt.plot(ways,100.0/ways,"r")
-plt.show()
-
-fig,ax = plt.subplots(1)
-ax.plot(ways, val_accs, "m", label="Siamese(val set)")
-ax.plot(ways, train_accs, "y", label="Siamese(train set)")
-plt.plot(ways, nn_accs, label="Nearest neighbour")
-
-ax.plot(ways, 100.0/ways, "g", label="Random guessing")
-plt.xlabel("Number of possible classes in one-shot tasks")
-plt.ylabel("% Accuracy")
-plt.title("Omiglot One-Shot Learning Performance of a Siamese Network")
-box = ax.get_position()
-ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-inputs,targets = loader.make_oneshot_task(20, "val")
-plt.show()
-
-plot_oneshot_task(inputs)
-
-"""### Inference and Observations
-
-The above model created seems to overfit a bit, one of the main reasons can be, the learning decay for each layer(as it is being mentioned in the original paper), has not been implemented in the current notebook.
-
-Also one of the other reasons can be, is number of iterations during training time. Currently the model is being trained for 20,0000 iterations, one iteration being one full pass over the data set.
-
-**Metric used to test the efficiency of the model**
-Siamese Networks are mainly used to Image Verification.
-
-Image Verification, being the task you're given two images and you have to tell if they are of the same person/class or category. Since in context of the problem we have in hand of image verification, classifying similar images of characters as same is the main problem we need to solve, therefore choosing ***accuracy*** is the right metric we should use to validate the performance of our model on new unseen data.
-"""
-
