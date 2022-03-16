@@ -16,7 +16,7 @@
 #### BLockers/Surprises
 - Compatibility issues with tensor flow versions varying
 - Gradient Issue, now know where it is coming from. CNN says there is no real loss for the embedding
-- The GPU server is not working as it is supposed to 
+- The GPU server is not working as it is supposed to connected with Quinn to fix 
 
 
 
