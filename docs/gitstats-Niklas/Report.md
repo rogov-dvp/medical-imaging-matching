@@ -64,3 +64,8 @@
 - training is currently in progress, report of results and insights follows asap
 - also worked on the peer/team evalualtion
 
+## 14) Mar 18 - Identified and fix GPU issue
+- Finally found the big blocker and could resolve it with help of Quinn from BCCancer
+- Run model after fixing to check functionality (looks like it works now)
+- Plan how to most efficiently use the last weeks on the gpu
+
