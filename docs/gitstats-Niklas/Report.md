@@ -64,10 +64,14 @@
 - training is currently in progress, report of results and insights follows asap
 - also worked on the peer/team evalualtion
 
-## 14) CNN Training issue fixed
+## 14) Mar 18 - Identified and fix GPU issue
+- Finally found the big blocker and could resolve it with help of Quinn from BCCancer
+- Run model after fixing to check functionality (looks like it works now)
+- Look into which parameters are most promising to optimise
+
+## 15) CNN Training issue fixed
 - problem was an incompatability between the cuda drivers and the conda installation
 - clean everything and reinstall the drivers and tensorflow using pip resolved the issue
 - the test training on example data where the outcome is known, passed our tests, so we can finally continue
-
 
 
