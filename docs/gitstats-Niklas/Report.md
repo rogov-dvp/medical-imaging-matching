@@ -64,3 +64,10 @@
 - training is currently in progress, report of results and insights follows asap
 - also worked on the peer/team evalualtion
 
+## 14) CNN Training issue fixed
+- problem was an incompatability between the cuda drivers and the conda installation
+- clean everything and reinstall the drivers and tensorflow using pip resolved the issue
+- the test training on example data where the outcome is known, passed our tests, so we can finally continue
+
+
+
