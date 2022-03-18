@@ -23,3 +23,6 @@
 - March 18, 2022
 - Issue #343
 - Continued exploration into the integration of the batch builder.
+- Added sections to the report for Batch Builder and User Feedback.
+
+
