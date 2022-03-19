@@ -23,6 +23,13 @@ Refer to git commits for the rest of the breakdowns.
    - Edited peer testing report
    - Performed peer evaluation
 
+3) Week of March 14, 2022
+
+   - Worked on integrating all the features together on the remote server (ie. Preprocessing, Batch Builder, Breast Detection, and Model (CNN))
+   - Wrote integration tests for the integration of the features
+   - Researched how to use the hard cases for batch building first.
+   - created files for final report and presentation
+
 Notes:
 
 Gitstats will not reflect work done on remote server.
