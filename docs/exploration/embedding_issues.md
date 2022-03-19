@@ -102,6 +102,24 @@ $$
 - If loss gets stuck using *online hard-negative mining* start with *semi-hard* negative mining and switch to *hard-negative* mining later on.
 - Watch for collapsed models, *semi-hard* negative mining can also help with this.
 
+### Batch Building
+
+As we mentioned above, we want to focus on *online hard-negative mining* or *semi-hard* if that is not available. This means when we are building our batches, we want to choose triplets with the highest loss.
+
+We want to search for these hard triplets online because which triplets are hard depends on their embeddings, which depend on the model parameters. In other words, the set of triplets labeled "hard" will probably change as the model trains.
+
+So, within a batch, compare all of the distances and construct the triplets with the where the anchor-negative distance $||f(x)_i^a)-f(x)_i^n||_2^2$ is the *smallest*. This is *online mining* as you are computing the batch and then picking which triplets to compare. It's *hard negative mining* because you're choosing the smallest anchor-negative distance. (By contrast, batch-hard mining chooses the hardest negative and the hardest positive. The hardest positive has the *largest* $||f(x)_i^a)-f(x)_i^p||_2^2$. Batch-hard mining is an even harder task because both the positives and negatives are hardest.)
+
+By construction, we know that the loss for all non-hard triplets must be smaller because hard triplets are characterized by having the largest losses. This means that the numerical values of hard mining will tend to be larger compared to other methods of choosing triplets.
+
+#### **Starting with *semi-hard* negative mining**
+
+If we start training the model with online hard negative mining, the loss tends to just get stuck at a high value and not decrease. If we first train with semi-hard negative mining, and then switch to online hard negative mining, the model tends to do better.
+
+Semi-hard negative mining has the same goal as (∗), but instead of focusing on *all* triplets in $\tau$, it only looks to the triplets that *already satisfy the a specific ordering*: $$||f(x)_i^a)-f(x)_i^p||_2^2 \lt ||f(x)_i^a)-f(x)_i^n||_2^2 \lt \alpha$$ and then choosing the *hardest negative* that satisfies this criterion. The semi-hard loss tends to quickly decrease to very small values because the underlying task is easier. The points are already ordered correctly, and any points which aren't ordered that way are ignored.
+
+I think of this as a certain kind of supervised pre-training of the model: sort the negatives that are within the margin of the anchors so that the online batch hard loss task has a good starting point.
+
 ### Image Pipeline/Preprocessing
 
 There may also be an issue with how we are feeding the images to the model. We are currently investigating this via a [Keras example/tutorial](https://keras.io/examples/vision/siamese_network/).
