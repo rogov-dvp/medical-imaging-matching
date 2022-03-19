@@ -120,6 +120,10 @@ Semi-hard negative mining has the same goal as (∗), but instead of focusing on
 
 I think of this as a certain kind of supervised pre-training of the model: sort the negatives that are within the margin of the anchors so that the online batch hard loss task has a good starting point.
 
+Here is an example using PyTorch: [Online Hard Example Mining on Pytorch](https://erogol.com/online-hard-example-mining-pytorch/)
+
+Here is one with Tensorflow: [Triplet Loss and Online Triplet Mining in TensorFlow](https://omoindrot.github.io/triplet-loss)
+
 ### Image Pipeline/Preprocessing
 
 There may also be an issue with how we are feeding the images to the model. We are currently investigating this via a [Keras example/tutorial](https://keras.io/examples/vision/siamese_network/).
