@@ -88,7 +88,11 @@ def crop_breasts(images):
     
     return np.asarray(images_out)
 
+# This function exists for reading cv2
+def set_image(file_location):
+    return cv2.imread(file_location)
+
 
 #Set images and run function
-img = cv2.imread("test_images_kaggle/images/2016_BC003122_ CC_L.jpg")  #test_images_kaggle/images
+img = set_image("../../test_images_kaggle/images/2017_BC015902_ CC_L.jpg")  #TODO: Image needs to be automatically inserted
 crop_breasts(np.asarray([img]))  #np.asarray([img,img])
