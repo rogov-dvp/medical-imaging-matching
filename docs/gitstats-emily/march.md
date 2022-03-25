@@ -30,6 +30,12 @@ Refer to git commits for the rest of the breakdowns.
    - Researched how to use the hard cases for batch building first.
    - created files for final report and presentation
 
+4) Week of March 21st, 2022
+
+   - Working on the integration of all features on the remote server (will bring changes here eventually)
+      - See planning document for flow: `script_integration.md`
+   - Began working on integration testing for the integration between all features.
+
 Notes:
 
 Gitstats will not reflect work done on remote server.
