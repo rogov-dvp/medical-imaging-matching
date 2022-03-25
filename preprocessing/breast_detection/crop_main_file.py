@@ -59,8 +59,6 @@ def detect_fn(image):
     return detections
 
 def crop_breasts(images):
-    category_index = label_map_util.create_category_index_from_labelmap(ANNOTATION_PATH + '/label_map.pbtxt')
-
     images_out = []
 
     for i in range(images.shape[0]):
