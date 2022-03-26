@@ -56,6 +56,8 @@ def preprocess(up_file):
       string: filepath of the now processed image file.
   """
     pp_file = ""
+    print(up_file)
+    print(type(up_file))
     print("querying " + str(up_file))
     ppd = PreprocessData(up_file, processed_path, unprocessed_images)
     result = ppd.process_image()
@@ -78,9 +80,11 @@ def matching_sim(files):
 
 
 # CODE
+# TODO port preprocessing, model, breast detection and batch builder into main.
 
 # read in mismatch
 mismatches = []
+
 with open("../data/mismatches.csv", "r") as file:
     csv_file = csv.reader(file)
 
