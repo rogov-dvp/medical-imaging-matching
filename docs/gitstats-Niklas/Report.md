@@ -74,4 +74,15 @@
 - clean everything and reinstall the drivers and tensorflow using pip resolved the issue
 - the test training on example data where the outcome is known, passed our tests, so we can finally continue
 
+## 16) Train and Evaluate
+- Train CNN with VGG Architecture in Siamese set up (two input mammograms)
+- Evaluate model 
+	- 87% accurarcy on 10 one shot task
+	- clearly separable similarities for same/different patients mammograms fed
+	
+## 17) Prepare for Triplet Loss
+- Start implementing the breast cropping algorithm into model
+- Adjust triplet model to run on resetup gpu
+- sort files for final training / parameter optimisation phase
+
 
