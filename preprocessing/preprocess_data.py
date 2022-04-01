@@ -55,18 +55,23 @@ class PreprocessData:
         if "CC" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lcc/" + self.filename, image)
             np.save(self.processed_path + "/lcc/" + name, image)
+            self.processed_path = self.processed_path + "/lcc/" + name + ".npy"
         elif "CC" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rcc/" + self.filename, image)
             np.save(self.processed_path + "/rcc/" + name, image)
+            self.processed_path = self.processed_path + "/rcc/" + name + ".npy"
         elif "MLO" in self.filename and "R" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/rmlo/" + self.filename, image)
             np.save(self.processed_path + "/rmlo/" + name, image)
+            self.processed_path = self.processed_path + "/rmlo/" + name + ".npy"
         elif "MLO" in self.filename and "L" in self.filename:
             # saved = cv2.imwrite(self.processed_path + "/lmlo/" + self.filename, image)
             np.save(self.processed_path + "/lmlo/" + name, image)
+            self.processed_path = self.processed_path + "/lmlo/" + name + ".npy"
         else:
             # saved = cv2.imwrite(self.processed_path + "/" + self.filename, image)
             np.save(self.processed_path + "/" + name, image)
+            self.processed_path = self.processed_path + "/" + name + ".npy"
 
     def process_image(self):
         """
