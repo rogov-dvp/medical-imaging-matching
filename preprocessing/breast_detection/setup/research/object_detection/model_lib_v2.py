@@ -1164,7 +1164,3 @@ def eval_continuously(
           postprocess_on_cpu=postprocess_on_cpu,
           global_step=global_step,
           )
-
-    if global_step.numpy() == configs['train_config'].num_steps:
-      tf.logging.info('Exiting evaluation at step %d', global_step.numpy())
-      return
