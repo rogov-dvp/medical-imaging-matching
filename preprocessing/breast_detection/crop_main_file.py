@@ -90,6 +90,6 @@ def set_image(file_location):
     return cv2.imread(file_location)
 
 #Set images and run function
-img = set_image('test_images_kaggle/images/2016_BC003122_ CC_R.jpg')  #TODO: Image needs to be automatically inserted
-
+img = set_image('../../test_images_kaggle/images/2016_BC003122_ CC_R.jpg')  #TODO: Image needs to be automatically inserted
+print("PRINT STATEMENT IMAGE:",img)
 crop_breasts(np.asarray([img]))  #np.asarray([img,img])
