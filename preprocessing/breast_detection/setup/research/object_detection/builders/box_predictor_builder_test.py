@@ -15,19 +15,17 @@
 
 """Tests for box_predictor_builder."""
 
-import unittest
-from unittest import mock  # pylint: disable=g-importing-member
-import tensorflow.compat.v1 as tf
+import mock
+import tensorflow as tf
+
 from google.protobuf import text_format
 from object_detection.builders import box_predictor_builder
 from object_detection.builders import hyperparams_builder
 from object_detection.predictors import mask_rcnn_box_predictor
 from object_detection.protos import box_predictor_pb2
 from object_detection.protos import hyperparams_pb2
-from object_detection.utils import tf_version
 
 
-@unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only Tests.')
 class ConvolutionalBoxPredictorBuilderTest(tf.test.TestCase):
 
   def test_box_predictor_calls_conv_argscope_fn(self):
@@ -162,7 +160,6 @@ class ConvolutionalBoxPredictorBuilderTest(tf.test.TestCase):
     self.assertFalse(class_head._use_depthwise)
 
 
-@unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only Tests.')
 class WeightSharedConvolutionalBoxPredictorBuilderTest(tf.test.TestCase):
 
   def test_box_predictor_calls_conv_argscope_fn(self):
@@ -356,10 +353,6 @@ class WeightSharedConvolutionalBoxPredictorBuilderTest(tf.test.TestCase):
     self.assertEqual(box_predictor._apply_batch_norm, True)
 
 
-
-
-
-@unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only Tests.')
 class MaskRCNNBoxPredictorBuilderTest(tf.test.TestCase):
 
   def test_box_predictor_builder_calls_fc_argscope_fn(self):
@@ -491,8 +484,8 @@ class MaskRCNNBoxPredictorBuilderTest(tf.test.TestCase):
     self.assertEqual(box_predictor.num_classes, 90)
     self.assertTrue(box_predictor._is_training)
     self.assertEqual(box_head._box_code_size, 4)
-    self.assertIn(
-        mask_rcnn_box_predictor.MASK_PREDICTIONS, third_stage_heads)
+    self.assertTrue(
+        mask_rcnn_box_predictor.MASK_PREDICTIONS in third_stage_heads)
     self.assertEqual(
         third_stage_heads[mask_rcnn_box_predictor.MASK_PREDICTIONS]
         ._mask_prediction_conv_depth, 512)
@@ -531,8 +524,8 @@ class MaskRCNNBoxPredictorBuilderTest(tf.test.TestCase):
     self.assertEqual(box_predictor.num_classes, 90)
     self.assertTrue(box_predictor._is_training)
     self.assertEqual(box_head._box_code_size, 4)
-    self.assertIn(
-        mask_rcnn_box_predictor.MASK_PREDICTIONS, third_stage_heads)
+    self.assertTrue(
+        mask_rcnn_box_predictor.MASK_PREDICTIONS in third_stage_heads)
     self.assertEqual(
         third_stage_heads[mask_rcnn_box_predictor.MASK_PREDICTIONS]
         ._mask_prediction_conv_depth, 512)
@@ -540,7 +533,6 @@ class MaskRCNNBoxPredictorBuilderTest(tf.test.TestCase):
                     ._convolve_then_upsample)
 
 
-@unittest.skipIf(tf_version.is_tf2(), 'Skipping TF1.X only Tests.')
 class RfcnBoxPredictorBuilderTest(tf.test.TestCase):
 
   def test_box_predictor_calls_fc_argscope_fn(self):

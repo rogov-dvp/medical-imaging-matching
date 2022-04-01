@@ -21,13 +21,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-# pylint: disable=g-import-not-at-top
-try:
-  from tensorflow.contrib import training as contrib_training
-except ImportError:
-  # TF 2.0 doesn't ship with contrib.
-  pass
-# pylint: enable=g-import-not-at-top
+import tensorflow as tf
 
 
 def create_hparams(hparams_overrides=None):
@@ -40,7 +34,7 @@ def create_hparams(hparams_overrides=None):
   Returns:
     The hyperparameters as a tf.HParams object.
   """
-  hparams = contrib_training.HParams(
+  hparams = tf.contrib.training.HParams(
       # Whether a fine tuning checkpoint (provided in the pipeline config)
       # should be loaded for training.
       load_pretrained=True)

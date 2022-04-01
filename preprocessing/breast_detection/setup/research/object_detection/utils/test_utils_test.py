@@ -15,18 +15,13 @@
 
 """Tests for object_detection.utils.test_utils."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
-from object_detection.utils import test_case
 from object_detection.utils import test_utils
 
 
-class TestUtilsTest(test_case.TestCase):
+class TestUtilsTest(tf.test.TestCase):
 
   def test_diagonal_gradient_image(self):
     """Tests if a good pyramid image is created."""
@@ -68,10 +63,10 @@ class TestUtilsTest(test_case.TestCase):
     self.assertAllEqual(boxes[:, 0] < boxes[:, 2], true_column)
     self.assertAllEqual(boxes[:, 1] < boxes[:, 3], true_column)
 
-    self.assertGreaterEqual(boxes[:, 0].min(), 0)
-    self.assertGreaterEqual(boxes[:, 1].min(), 0)
-    self.assertLessEqual(boxes[:, 2].max(), max_height)
-    self.assertLessEqual(boxes[:, 3].max(), max_width)
+    self.assertTrue(boxes[:, 0].min() >= 0)
+    self.assertTrue(boxes[:, 1].min() >= 0)
+    self.assertTrue(boxes[:, 2].max() <= max_height)
+    self.assertTrue(boxes[:, 3].max() <= max_width)
 
   def test_first_rows_close_as_set(self):
     a = [1, 2, 3, 0, 0]

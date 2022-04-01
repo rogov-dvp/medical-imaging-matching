@@ -25,23 +25,22 @@ Classification losses:
  * WeightedSoftmaxClassificationLoss
  * WeightedSoftmaxClassificationAgainstLogitsLoss
  * BootstrappedSigmoidClassificationLoss
- * WeightedDiceClassificationLoss
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from abc import ABCMeta
+from abc import abstractmethod
 
-import abc
-import six
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
+
 from object_detection.core import box_list
 from object_detection.core import box_list_ops
 from object_detection.utils import ops
-from object_detection.utils import shape_utils
+
+slim = tf.contrib.slim
 
 
-class Loss(six.with_metaclass(abc.ABCMeta, object)):
+class Loss(object):
   """Abstract base class for loss functions."""
+  __metaclass__ = ABCMeta
 
   def __call__(self,
                prediction_tensor,
@@ -97,7 +96,7 @@ class Loss(six.with_metaclass(abc.ABCMeta, object)):
     loss_multiplier_shape = tf.stack([-1] + [1] * (len(tensor.shape) - 1))
     return tf.cast(tf.reshape(losses_mask, loss_multiplier_shape), tf.float32)
 
-  @abc.abstractmethod
+  @abstractmethod
   def _compute_loss(self, prediction_tensor, target_tensor, **params):
     """Method to be overridden by implementations.
 
@@ -156,7 +155,6 @@ class WeightedSmoothL1LocalizationLoss(Loss):
     Args:
       delta: delta for smooth L1 loss.
     """
-    super(WeightedSmoothL1LocalizationLoss, self).__init__()
     self._delta = delta
 
   def _compute_loss(self, prediction_tensor, target_tensor, weights):
@@ -212,38 +210,6 @@ class WeightedIOULocalizationLoss(Loss):
     return tf.reshape(weights, [-1]) * per_anchor_iou_loss
 
 
-class WeightedGIOULocalizationLoss(Loss):
-  """GIOU localization loss function.
-
-  Sums the GIOU loss for corresponding pairs of predicted/groundtruth boxes
-  and for each pair assign a loss of 1 - GIOU.  We then compute a weighted
-  sum over all pairs which is returned as the total loss.
-  """
-
-  def _compute_loss(self, prediction_tensor, target_tensor, weights):
-    """Compute loss function.
-
-    Args:
-      prediction_tensor: A float tensor of shape [batch_size, num_anchors, 4]
-        representing the decoded predicted boxes
-      target_tensor: A float tensor of shape [batch_size, num_anchors, 4]
-        representing the decoded target boxes
-      weights: a float tensor of shape [batch_size, num_anchors]
-
-    Returns:
-      loss: a float tensor of shape [batch_size, num_anchors] tensor
-        representing the value of the loss function.
-    """
-    batch_size, num_anchors, _ = shape_utils.combined_static_and_dynamic_shape(
-        prediction_tensor)
-    predicted_boxes = tf.reshape(prediction_tensor, [-1, 4])
-    target_boxes = tf.reshape(target_tensor, [-1, 4])
-
-    per_anchor_iou_loss = 1 - ops.giou(predicted_boxes, target_boxes)
-    return tf.reshape(tf.reshape(weights, [-1]) * per_anchor_iou_loss,
-                      [batch_size, num_anchors])
-
-
 class WeightedSigmoidClassificationLoss(Loss):
   """Sigmoid cross entropy classification loss function."""
 
@@ -279,86 +245,6 @@ class WeightedSigmoidClassificationLoss(Loss):
     return per_entry_cross_ent * weights
 
 
-class WeightedDiceClassificationLoss(Loss):
-  """Dice loss for classification [1][2].
-
-  [1]: https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient
-  [2]: https://arxiv.org/abs/1606.04797
-
-  """
-
-  def __init__(self, squared_normalization, is_prediction_probability=False):
-    """Initializes the loss object.
-
-    Args:
-      squared_normalization: boolean, if set, we square the probabilities in the
-        denominator term used for normalization.
-      is_prediction_probability: boolean, whether or not the input
-        prediction_tensor represents a probability. If false, it is
-        first converted to a probability by applying sigmoid.
-    """
-
-    self._squared_normalization = squared_normalization
-    self.is_prediction_probability = is_prediction_probability
-    super(WeightedDiceClassificationLoss, self).__init__()
-
-  def _compute_loss(self,
-                    prediction_tensor,
-                    target_tensor,
-                    weights,
-                    class_indices=None):
-    """Computes the loss value.
-
-    Dice loss uses the area of the ground truth and prediction tensors for
-    normalization. We compute area by summing along the anchors (2nd) dimension.
-
-    Args:
-      prediction_tensor: A float tensor of shape [batch_size, num_pixels,
-        num_classes] representing the predicted logits for each class.
-        num_pixels denotes the total number of pixels in the spatial dimensions
-        of the mask after flattening.
-      target_tensor: A float tensor of shape [batch_size, num_pixels,
-        num_classes] representing one-hot encoded classification targets.
-        num_pixels denotes the total number of pixels in the spatial dimensions
-        of the mask after flattening.
-      weights: a float tensor of shape, either [batch_size, num_anchors,
-        num_classes] or [batch_size, num_anchors, 1]. If the shape is
-        [batch_size, num_anchors, 1], all the classses are equally weighted.
-      class_indices: (Optional) A 1-D integer tensor of class indices.
-        If provided, computes loss only for the specified class indices.
-
-    Returns:
-      loss: a float tensor of shape [batch_size, num_classes]
-        representing the value of the loss function.
-    """
-    if class_indices is not None:
-      weights *= tf.reshape(
-          ops.indices_to_dense_vector(class_indices,
-                                      tf.shape(prediction_tensor)[2]),
-          [1, 1, -1])
-
-    if self.is_prediction_probability:
-      prob_tensor = prediction_tensor
-    else:
-      prob_tensor = tf.nn.sigmoid(prediction_tensor)
-
-    if self._squared_normalization:
-      prob_tensor = tf.pow(prob_tensor, 2)
-      target_tensor = tf.pow(target_tensor, 2)
-
-    prob_tensor *= weights
-    target_tensor *= weights
-
-    prediction_area = tf.reduce_sum(prob_tensor, axis=1)
-    gt_area = tf.reduce_sum(target_tensor, axis=1)
-
-    intersection = tf.reduce_sum(prob_tensor * target_tensor, axis=1)
-    dice_coeff = 2 * intersection / tf.maximum(gt_area + prediction_area, 1.0)
-    dice_loss = 1 - dice_coeff
-
-    return dice_loss
-
-
 class SigmoidFocalClassificationLoss(Loss):
   """Sigmoid focal cross entropy loss.
 
@@ -373,7 +259,6 @@ class SigmoidFocalClassificationLoss(Loss):
       gamma: exponent of the modulating factor (1 - p_t) ^ gamma.
       alpha: optional alpha weighting factor to balance positives vs negatives.
     """
-    super(SigmoidFocalClassificationLoss, self).__init__()
     self._alpha = alpha
     self._gamma = gamma
 
@@ -433,7 +318,6 @@ class WeightedSoftmaxClassificationLoss(Loss):
                    (default 1.0)
 
     """
-    super(WeightedSoftmaxClassificationLoss, self).__init__()
     self._logit_scale = logit_scale
 
   def _compute_loss(self, prediction_tensor, target_tensor, weights):
@@ -478,7 +362,6 @@ class WeightedSoftmaxClassificationAgainstLogitsLoss(Loss):
                    (default 1.0)
 
     """
-    super(WeightedSoftmaxClassificationAgainstLogitsLoss, self).__init__()
     self._logit_scale = logit_scale
 
   def _scale_and_softmax_logits(self, logits):
@@ -542,7 +425,6 @@ class BootstrappedSigmoidClassificationLoss(Loss):
     Raises:
       ValueError: if bootstrap_type is not either 'hard' or 'soft'
     """
-    super(BootstrappedSigmoidClassificationLoss, self).__init__()
     if bootstrap_type != 'hard' and bootstrap_type != 'soft':
       raise ValueError('Unrecognized bootstrap_type: must be one of '
                        '\'hard\' or \'soft.\'')
@@ -734,10 +616,8 @@ class HardExampleMiner(object):
   def summarize(self):
     """Summarize the number of positives and negatives after mining."""
     if self._num_positives_list and self._num_negatives_list:
-      avg_num_positives = tf.reduce_mean(
-          tf.cast(self._num_positives_list, dtype=tf.float32))
-      avg_num_negatives = tf.reduce_mean(
-          tf.cast(self._num_negatives_list, dtype=tf.float32))
+      avg_num_positives = tf.reduce_mean(tf.to_float(self._num_positives_list))
+      avg_num_negatives = tf.reduce_mean(tf.to_float(self._num_negatives_list))
       tf.summary.scalar('HardExampleMiner/NumPositives', avg_num_positives)
       tf.summary.scalar('HardExampleMiner/NumNegatives', avg_num_negatives)
 
@@ -781,109 +661,14 @@ class HardExampleMiner(object):
     """
     positives_indicator = tf.gather(match.matched_column_indicator(), indices)
     negatives_indicator = tf.gather(match.unmatched_column_indicator(), indices)
-    num_positives = tf.reduce_sum(tf.cast(positives_indicator, dtype=tf.int32))
-    max_negatives = tf.maximum(
-        min_negatives_per_image,
-        tf.cast(max_negatives_per_positive *
-                tf.cast(num_positives, dtype=tf.float32), dtype=tf.int32))
+    num_positives = tf.reduce_sum(tf.to_int32(positives_indicator))
+    max_negatives = tf.maximum(min_negatives_per_image,
+                               tf.to_int32(max_negatives_per_positive *
+                                           tf.to_float(num_positives)))
     topk_negatives_indicator = tf.less_equal(
-        tf.cumsum(tf.cast(negatives_indicator, dtype=tf.int32)), max_negatives)
+        tf.cumsum(tf.to_int32(negatives_indicator)), max_negatives)
     subsampled_selection_indices = tf.where(
         tf.logical_or(positives_indicator, topk_negatives_indicator))
     num_negatives = tf.size(subsampled_selection_indices) - num_positives
     return (tf.reshape(tf.gather(indices, subsampled_selection_indices), [-1]),
             num_positives, num_negatives)
-
-
-class PenaltyReducedLogisticFocalLoss(Loss):
-  """Penalty-reduced pixelwise logistic regression with focal loss.
-
-  The loss is defined in Equation (1) of the Objects as Points[1] paper.
-  Although the loss is defined per-pixel in the output space, this class
-  assumes that each pixel is an anchor to be compatible with the base class.
-
-  [1]: https://arxiv.org/abs/1904.07850
-  """
-
-  def __init__(self, alpha=2.0, beta=4.0, sigmoid_clip_value=1e-4):
-    """Constructor.
-
-    Args:
-      alpha: Focussing parameter of the focal loss. Increasing this will
-        decrease the loss contribution of the well classified examples.
-      beta: The local penalty reduction factor. Increasing this will decrease
-        the contribution of loss due to negative pixels near the keypoint.
-      sigmoid_clip_value: The sigmoid operation used internally will be clipped
-        between [sigmoid_clip_value, 1 - sigmoid_clip_value)
-    """
-    self._alpha = alpha
-    self._beta = beta
-    self._sigmoid_clip_value = sigmoid_clip_value
-    super(PenaltyReducedLogisticFocalLoss, self).__init__()
-
-  def _compute_loss(self, prediction_tensor, target_tensor, weights):
-    """Compute loss function.
-
-    In all input tensors, `num_anchors` is the total number of pixels in the
-    the output space.
-
-    Args:
-      prediction_tensor: A float tensor of shape [batch_size, num_anchors,
-        num_classes] representing the predicted unscaled logits for each class.
-        The function will compute sigmoid on this tensor internally.
-      target_tensor: A float tensor of shape [batch_size, num_anchors,
-        num_classes] representing a tensor with the 'splatted' keypoints,
-        possibly using a gaussian kernel. This function assumes that
-        the target is bounded between [0, 1].
-      weights: a float tensor of shape, either [batch_size, num_anchors,
-        num_classes] or [batch_size, num_anchors, 1]. If the shape is
-        [batch_size, num_anchors, 1], all the classses are equally weighted.
-
-
-    Returns:
-      loss: a float tensor of shape [batch_size, num_anchors, num_classes]
-        representing the value of the loss function.
-    """
-
-    is_present_tensor = tf.math.equal(target_tensor, 1.0)
-    prediction_tensor = tf.clip_by_value(tf.sigmoid(prediction_tensor),
-                                         self._sigmoid_clip_value,
-                                         1 - self._sigmoid_clip_value)
-
-    positive_loss = (tf.math.pow((1 - prediction_tensor), self._alpha)*
-                     tf.math.log(prediction_tensor))
-    negative_loss = (tf.math.pow((1 - target_tensor), self._beta)*
-                     tf.math.pow(prediction_tensor, self._alpha)*
-                     tf.math.log(1 - prediction_tensor))
-
-    loss = -tf.where(is_present_tensor, positive_loss, negative_loss)
-    return loss * weights
-
-
-class L1LocalizationLoss(Loss):
-  """L1 loss or absolute difference.
-
-  When used in a per-pixel manner, each pixel should be given as an anchor.
-  """
-
-  def _compute_loss(self, prediction_tensor, target_tensor, weights):
-    """Compute loss function.
-
-    Args:
-      prediction_tensor: A float tensor of shape [batch_size, num_anchors]
-        representing the (encoded) predicted locations of objects.
-      target_tensor: A float tensor of shape [batch_size, num_anchors]
-        representing the regression targets
-      weights: a float tensor of shape [batch_size, num_anchors]
-
-    Returns:
-      loss: a float tensor of shape [batch_size, num_anchors] tensor
-        representing the value of the loss function.
-    """
-    return tf.losses.absolute_difference(
-        target_tensor,
-        prediction_tensor,
-        weights=weights,
-        loss_collection=None,
-        reduction=tf.losses.Reduction.NONE
-    )

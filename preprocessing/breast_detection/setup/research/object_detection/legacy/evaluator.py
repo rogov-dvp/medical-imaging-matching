@@ -19,7 +19,7 @@ DetectionModel.
 """
 
 import logging
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection import eval_util
 from object_detection.core import prefetcher
@@ -53,9 +53,6 @@ EVAL_METRICS_CLASS_DICT = {
     # DEPRECATED: please use oid_challenge_detection_metrics instead
     'oid_challenge_object_detection_metrics':
         object_detection_evaluation.OpenImagesDetectionChallengeEvaluator,
-    'oid_challenge_segmentation_metrics':
-        object_detection_evaluation
-        .OpenImagesInstanceSegmentationChallengeEvaluator,
 }
 
 EVAL_DEFAULT_METRIC = 'pascal_voc_detection_metrics'
@@ -83,7 +80,7 @@ def _extract_predictions_and_losses(model,
   input_dict = prefetch_queue.dequeue()
   original_image = tf.expand_dims(input_dict[fields.InputDataFields.image], 0)
   preprocessed_image, true_image_shapes = model.preprocess(
-      tf.cast(original_image, dtype=tf.float32))
+      tf.to_float(original_image))
   prediction_dict = model.predict(preprocessed_image, true_image_shapes)
   detections = model.postprocess(prediction_dict, true_image_shapes)
 
@@ -122,8 +119,7 @@ def _extract_predictions_and_losses(model,
         [input_dict[fields.InputDataFields.groundtruth_boxes]],
         [tf.one_hot(input_dict[fields.InputDataFields.groundtruth_classes]
                     - label_id_offset, depth=model.num_classes)],
-        groundtruth_masks_list=groundtruth_masks_list,
-        groundtruth_keypoints_list=groundtruth_keypoints_list)
+        groundtruth_masks_list, groundtruth_keypoints_list)
     losses_dict.update(model.loss(prediction_dict, true_image_shapes))
 
   result_dict = eval_util.result_dict_for_single_example(

@@ -15,12 +15,8 @@
 
 """Tests for object_detection.np_box_ops."""
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection.utils import np_box_ops
 

@@ -15,13 +15,15 @@
 
 """SSDFeatureExtractor for Keras MobilenetV1 features."""
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
 from object_detection.models.keras_models import mobilenet_v1
 from object_detection.utils import ops
 from object_detection.utils import shape_utils
+
+slim = tf.contrib.slim
 
 
 class SSDMobileNetV1KerasFeatureExtractor(
@@ -38,7 +40,6 @@ class SSDMobileNetV1KerasFeatureExtractor(
                inplace_batchnorm_update,
                use_explicit_padding=False,
                use_depthwise=False,
-               num_layers=6,
                override_base_feature_extractor_hyperparams=False,
                name=None):
     """Keras MobileNetV1 Feature Extractor for SSD Models.
@@ -64,7 +65,6 @@ class SSDMobileNetV1KerasFeatureExtractor(
         inputs so that the output dimensions are the same as if 'SAME' padding
         were used.
       use_depthwise: Whether to use depthwise convolutions. Default is False.
-      num_layers: Number of SSD layers.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams`.
@@ -81,18 +81,17 @@ class SSDMobileNetV1KerasFeatureExtractor(
         inplace_batchnorm_update=inplace_batchnorm_update,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
-        num_layers=num_layers,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams,
         name=name)
     self._feature_map_layout = {
         'from_layer': ['Conv2d_11_pointwise', 'Conv2d_13_pointwise', '', '',
-                       '', ''][:self._num_layers],
-        'layer_depth': [-1, -1, 512, 256, 256, 128][:self._num_layers],
+                       '', ''],
+        'layer_depth': [-1, -1, 512, 256, 256, 128],
         'use_explicit_padding': self._use_explicit_padding,
         'use_depthwise': self._use_depthwise,
     }
-    self.classification_backbone = None
+    self._mobilenet_v1 = None
     self._feature_map_generator = None
 
   def build(self, input_shape):
@@ -110,7 +109,7 @@ class SSDMobileNetV1KerasFeatureExtractor(
         name='conv_pw_11_relu').output
     conv2d_13_pointwise = full_mobilenet_v1.get_layer(
         name='conv_pw_13_relu').output
-    self.classification_backbone = tf.keras.Model(
+    self._mobilenet_v1 = tf.keras.Model(
         inputs=full_mobilenet_v1.inputs,
         outputs=[conv2d_11_pointwise, conv2d_13_pointwise])
     self._feature_map_generator = (
@@ -154,11 +153,11 @@ class SSDMobileNetV1KerasFeatureExtractor(
     preprocessed_inputs = shape_utils.check_min_image_dim(
         33, preprocessed_inputs)
 
-    image_features = self.classification_backbone(
+    image_features = self._mobilenet_v1(
         ops.pad_to_multiple(preprocessed_inputs, self._pad_to_multiple))
 
     feature_maps = self._feature_map_generator({
         'Conv2d_11_pointwise': image_features[0],
         'Conv2d_13_pointwise': image_features[1]})
 
-    return list(feature_maps.values())
+    return feature_maps.values()

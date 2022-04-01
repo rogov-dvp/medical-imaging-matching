@@ -23,12 +23,7 @@ Example box operations that are supported:
 Whenever box_list_ops functions output a BoxList, the fields of the incoming
 BoxList are retained unless documented otherwise.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-from six.moves import range
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection.core import box_list
 from object_detection.utils import ops
@@ -105,31 +100,6 @@ def scale(boxlist, y_scale, x_scale, scope=None):
     return _copy_extra_fields(scaled_boxlist, boxlist)
 
 
-def scale_height_width(boxlist, y_scale, x_scale, scope=None):
-  """Scale the height and width of boxes, leaving centers unchanged.
-
-  Args:
-    boxlist: BoxList holding N boxes
-    y_scale: (float) scalar tensor
-    x_scale: (float) scalar tensor
-    scope: name scope.
-
-  Returns:
-    boxlist: BoxList holding N boxes
-  """
-  with tf.name_scope(scope, 'ScaleHeightWidth'):
-    y_scale = tf.cast(y_scale, tf.float32)
-    x_scale = tf.cast(x_scale, tf.float32)
-    yc, xc, height_orig, width_orig = boxlist.get_center_coordinates_and_sizes()
-    y_min = yc - 0.5 * y_scale * height_orig
-    y_max = yc + 0.5 * y_scale * height_orig
-    x_min = xc - 0.5 * x_scale * width_orig
-    x_max = xc + 0.5 * x_scale * width_orig
-    scaled_boxlist = box_list.BoxList(
-        tf.stack([y_min, x_min, y_max, x_max], 1))
-    return _copy_extra_fields(scaled_boxlist, boxlist)
-
-
 def clip_to_window(boxlist, window, filter_nonoverlapping=True, scope=None):
   """Clip bounding boxes to a window.
 
@@ -151,10 +121,7 @@ def clip_to_window(boxlist, window, filter_nonoverlapping=True, scope=None):
   with tf.name_scope(scope, 'ClipToWindow'):
     y_min, x_min, y_max, x_max = tf.split(
         value=boxlist.get(), num_or_size_splits=4, axis=1)
-    win_y_min = window[0]
-    win_x_min = window[1]
-    win_y_max = window[2]
-    win_x_max = window[3]
+    win_y_min, win_x_min, win_y_max, win_x_max = tf.unstack(window)
     y_min_clipped = tf.maximum(tf.minimum(y_min, win_y_max), win_y_min)
     y_max_clipped = tf.maximum(tf.minimum(y_max, win_y_max), win_y_min)
     x_min_clipped = tf.maximum(tf.minimum(x_min, win_x_max), win_x_min)
@@ -307,50 +274,6 @@ def iou(boxlist1, boxlist2, scope=None):
         tf.zeros_like(intersections), tf.truediv(intersections, unions))
 
 
-def l1(boxlist1, boxlist2, scope=None):
-  """Computes l1 loss (pairwise) between two boxlists.
-
-  Args:
-    boxlist1: BoxList holding N boxes
-    boxlist2: BoxList holding M boxes
-    scope: name scope.
-
-  Returns:
-    a tensor with shape [N, M] representing the pairwise L1 loss.
-  """
-  with tf.name_scope(scope, 'PairwiseL1'):
-    ycenter1, xcenter1, h1, w1 = boxlist1.get_center_coordinates_and_sizes()
-    ycenter2, xcenter2, h2, w2 = boxlist2.get_center_coordinates_and_sizes()
-    ycenters = tf.abs(tf.expand_dims(ycenter2, axis=0) - tf.expand_dims(
-        tf.transpose(ycenter1), axis=1))
-    xcenters = tf.abs(tf.expand_dims(xcenter2, axis=0) - tf.expand_dims(
-        tf.transpose(xcenter1), axis=1))
-    heights = tf.abs(tf.expand_dims(h2, axis=0) - tf.expand_dims(
-        tf.transpose(h1), axis=1))
-    widths = tf.abs(tf.expand_dims(w2, axis=0) - tf.expand_dims(
-        tf.transpose(w1), axis=1))
-    return ycenters + xcenters + heights + widths
-
-
-def giou(boxlist1, boxlist2, scope=None):
-  """Computes pairwise generalized IOU between two boxlists.
-
-  Args:
-    boxlist1: BoxList holding N boxes
-    boxlist2: BoxList holding M boxes
-    scope: name scope.
-
-  Returns:
-    a tensor with shape [N, M] representing the pairwise GIoU loss.
-  """
-  with tf.name_scope(scope, 'PairwiseGIoU'):
-    n = boxlist1.num_boxes()
-    m = boxlist2.num_boxes()
-    boxes1 = tf.repeat(boxlist1.get(), repeats=m, axis=0)
-    boxes2 = tf.tile(boxlist2.get(), multiples=[n, 1])
-    return tf.reshape(ops.giou(boxes1, boxes2), [n, m])
-
-
 def matched_iou(boxlist1, boxlist2, scope=None):
   """Compute intersection-over-union between corresponding boxes in boxlists.
 
@@ -416,7 +339,7 @@ def prune_non_overlapping_boxes(
     ioa_ = ioa(boxlist2, boxlist1)  # [M, N] tensor
     ioa_ = tf.reduce_max(ioa_, reduction_indices=[0])  # [N] tensor
     keep_bool = tf.greater_equal(ioa_, tf.constant(min_overlap))
-    keep_inds = tf.squeeze(tf.where(keep_bool), axis=[1])
+    keep_inds = tf.squeeze(tf.where(keep_bool), squeeze_dims=[1])
     new_boxlist1 = gather(boxlist1, keep_inds)
     return new_boxlist1, keep_inds
 
@@ -534,7 +457,7 @@ def boolean_mask(boxlist, indicator, fields=None, scope=None,
     if use_static_shapes:
       if not (indicator_sum and isinstance(indicator_sum, int)):
         raise ValueError('`indicator_sum` must be a of type int')
-      selected_positions = tf.cast(indicator, dtype=tf.float32)
+      selected_positions = tf.to_float(indicator)
       indexed_positions = tf.cast(
           tf.multiply(
               tf.cumsum(selected_positions), selected_positions),
@@ -543,7 +466,7 @@ def boolean_mask(boxlist, indicator, fields=None, scope=None,
           indexed_positions - 1, indicator_sum, dtype=tf.float32)
       sampled_indices = tf.cast(
           tf.tensordot(
-              tf.cast(tf.range(tf.shape(indicator)[0]), dtype=tf.float32),
+              tf.to_float(tf.range(tf.shape(indicator)[0])),
               one_hot_selector,
               axes=[0, 0]),
           dtype=tf.int32)
@@ -1039,7 +962,7 @@ def box_voting(selected_boxes, pool_boxes, iou_thresh=0.5):
     raise ValueError('pool_boxes must have a \'scores\' field')
 
   iou_ = iou(selected_boxes, pool_boxes)
-  match_indicator = tf.cast(tf.greater(iou_, iou_thresh), dtype=tf.float32)
+  match_indicator = tf.to_float(tf.greater(iou_, iou_thresh))
   num_matches = tf.reduce_sum(match_indicator, 1)
   # TODO(kbanoop): Handle the case where some boxes in selected_boxes do not
   # match to any boxes in pool_boxes. For such boxes without any matches, we

@@ -44,9 +44,7 @@ Example usage:
 import functools
 import json
 import os
-import tensorflow.compat.v1 as tf
-from tensorflow.python.util.deprecation import deprecated
-
+import tensorflow as tf
 
 from object_detection.builders import dataset_builder
 from object_detection.builders import graph_rewriter_builder
@@ -86,7 +84,7 @@ flags.DEFINE_string('model_config_path', '',
 FLAGS = flags.FLAGS
 
 
-@deprecated(None, 'Use object_detection/model_main.py.')
+@tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
 def main(_):
   assert FLAGS.train_dir, '`train_dir` is missing.'
   if FLAGS.task == 0: tf.gfile.MakeDirs(FLAGS.train_dir)

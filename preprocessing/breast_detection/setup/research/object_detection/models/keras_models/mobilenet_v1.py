@@ -19,10 +19,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection.core import freezable_batch_norm
-from object_detection.models.keras_models import model_utils
 
 
 def _fixed_padding(inputs, kernel_size, rate=1):  # pylint: disable=invalid-name
@@ -60,8 +59,7 @@ class _LayersOverride(object):
                conv_hyperparams=None,
                use_explicit_padding=False,
                alpha=1.0,
-               min_depth=None,
-               conv_defs=None):
+               min_depth=None):
     """Alternative tf.keras.layers interface, for use by the Keras MobileNetV1.
 
     It is used by the Keras applications kwargs injection API to
@@ -92,8 +90,6 @@ class _LayersOverride(object):
         modifies the number of filters in each convolutional layer. It's called
         depth multiplier in Keras application MobilenetV1.
       min_depth: Minimum number of filters in the convolutional layers.
-      conv_defs: Network layout to specify the mobilenet_v1 body. Default is
-        `None` to use the default mobilenet_v1 network layout.
     """
     self._alpha = alpha
     self._batchnorm_training = batchnorm_training
@@ -101,7 +97,6 @@ class _LayersOverride(object):
     self._conv_hyperparams = conv_hyperparams
     self._use_explicit_padding = use_explicit_padding
     self._min_depth = min_depth
-    self._conv_defs = conv_defs
     self.regularizer = tf.keras.regularizers.l2(0.00004 * 0.5)
     self.initializer = tf.truncated_normal_initializer(stddev=0.09)
 
@@ -118,8 +113,7 @@ class _LayersOverride(object):
     Args:
       filters: The number of filters to use for the convolution.
       kernel_size: The kernel size to specify the height and width of the 2D
-        convolution window. In this function, the kernel size is expected to
-        be pair of numbers and the numbers must be equal for this function.
+        convolution window.
       **kwargs: Keyword args specified by the Keras application for
         constructing the convolution.
 
@@ -127,22 +121,7 @@ class _LayersOverride(object):
       A one-arg callable that will either directly apply a Keras Conv2D layer to
       the input argument, or that will first pad the input then apply a Conv2D
       layer.
-
-    Raises:
-      ValueError: if kernel size is not a pair of equal
-        integers (representing a square kernel).
     """
-    if not isinstance(kernel_size, tuple):
-      raise ValueError('kernel is expected to be a tuple.')
-    if len(kernel_size) != 2:
-      raise ValueError('kernel is expected to be length two.')
-    if kernel_size[0] != kernel_size[1]:
-      raise ValueError('kernel is expected to be square.')
-    layer_name = kwargs['name']
-    if self._conv_defs:
-      conv_filters = model_utils.get_conv_def(self._conv_defs, layer_name)
-      if conv_filters:
-        filters = conv_filters
     # Apply the width multiplier and the minimum depth to the convolution layers
     filters = int(filters * self._alpha)
     if self._min_depth and filters < self._min_depth:
@@ -155,7 +134,7 @@ class _LayersOverride(object):
       kwargs['kernel_initializer'] = self.initializer
 
     kwargs['padding'] = 'same'
-    if self._use_explicit_padding and kernel_size[0] > 1:
+    if self._use_explicit_padding and kernel_size > 1:
       kwargs['padding'] = 'valid'
       def padded_conv(features):  # pylint: disable=invalid-name
         padded_features = self._FixedPaddingLayer(kernel_size)(features)
@@ -184,12 +163,7 @@ class _LayersOverride(object):
     """
     if self._conv_hyperparams:
       kwargs = self._conv_hyperparams.params(**kwargs)
-      # Both regularizer and initializaer also applies to depthwise layer in
-      # MobilenetV1, so we remap the kernel_* to depthwise_* here.
-      kwargs['depthwise_regularizer'] = kwargs['kernel_regularizer']
-      kwargs['depthwise_initializer'] = kwargs['kernel_initializer']
     else:
-      kwargs['depthwise_regularizer'] = self.regularizer
       kwargs['depthwise_initializer'] = self.initializer
 
     kwargs['padding'] = 'same'
@@ -253,7 +227,7 @@ class _LayersOverride(object):
 
     placeholder_with_default = tf.placeholder_with_default(
         input=input_tensor, shape=[None] + shape)
-    return model_utils.input_layer(shape, placeholder_with_default)
+    return tf.keras.layers.Input(tensor=placeholder_with_default)
 
   # pylint: disable=unused-argument
   def ReLU(self, *args, **kwargs):
@@ -304,7 +278,6 @@ def mobilenet_v1(batchnorm_training,
                  use_explicit_padding=False,
                  alpha=1.0,
                  min_depth=None,
-                 conv_defs=None,
                  **kwargs):
   """Instantiates the MobileNetV1 architecture, modified for object detection.
 
@@ -336,8 +309,6 @@ def mobilenet_v1(batchnorm_training,
       alpha: The width multiplier referenced in the MobileNetV1 paper. It
         modifies the number of filters in each convolutional layer.
       min_depth: Minimum number of filters in the convolutional layers.
-      conv_defs: Network layout to specify the mobilenet_v1 body. Default is
-        `None` to use the default mobilenet_v1 network layout.
       **kwargs: Keyword arguments forwarded directly to the
         `tf.keras.applications.Mobilenet` method that constructs the Keras
         model.
@@ -351,8 +322,7 @@ def mobilenet_v1(batchnorm_training,
       conv_hyperparams=conv_hyperparams,
       use_explicit_padding=use_explicit_padding,
       min_depth=min_depth,
-      alpha=alpha,
-      conv_defs=conv_defs)
+      alpha=alpha)
   return tf.keras.applications.MobileNet(
       alpha=alpha, layers=layers_override, **kwargs)
 # pylint: enable=invalid-name

@@ -15,7 +15,7 @@
 
 """Tests for box_coder_builder."""
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from google.protobuf import text_format
 from object_detection.box_coders import faster_rcnn_box_coder

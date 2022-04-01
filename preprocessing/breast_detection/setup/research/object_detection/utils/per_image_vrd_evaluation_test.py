@@ -13,13 +13,8 @@
 # limitations under the License.
 # ==============================================================================
 """Tests for object_detection.utils.per_image_vrd_evaluation."""
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 from object_detection.utils import per_image_vrd_evaluation
 

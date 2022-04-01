@@ -18,8 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from six.moves import range
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 
 
 def open_sharded_output_tfrecords(exit_stack, base_path, num_shards):

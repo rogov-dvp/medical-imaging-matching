@@ -16,12 +16,13 @@
 """Mobilenet v1 Faster R-CNN implementation."""
 import numpy as np
 
-import tensorflow.compat.v1 as tf
-import tf_slim as slim
+import tensorflow as tf
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from object_detection.utils import shape_utils
 from nets import mobilenet_v1
+
+slim = tf.contrib.slim
 
 
 def _get_mobilenet_conv_no_last_stride_defs(conv_depth_ratio_in_percentage):

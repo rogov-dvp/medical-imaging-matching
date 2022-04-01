@@ -19,7 +19,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 from tensorflow.python.ops import metrics_impl
 
 
@@ -98,16 +98,13 @@ def expected_calibration_error(y_true, y_pred, nbins=20):
 
   with tf.control_dependencies([bin_ids]):
     update_bin_counts_op = tf.assign_add(
-        bin_counts, tf.cast(tf.bincount(bin_ids, minlength=nbins),
-                            dtype=tf.float32))
+        bin_counts, tf.to_float(tf.bincount(bin_ids, minlength=nbins)))
     update_bin_true_sum_op = tf.assign_add(
         bin_true_sum,
-        tf.cast(tf.bincount(bin_ids, weights=y_true, minlength=nbins),
-                dtype=tf.float32))
+        tf.to_float(tf.bincount(bin_ids, weights=y_true, minlength=nbins)))
     update_bin_preds_sum_op = tf.assign_add(
         bin_preds_sum,
-        tf.cast(tf.bincount(bin_ids, weights=y_pred, minlength=nbins),
-                dtype=tf.float32))
+        tf.to_float(tf.bincount(bin_ids, weights=y_pred, minlength=nbins)))
 
   ece_update_op = _ece_from_bins(
       update_bin_counts_op,
