@@ -92,6 +92,8 @@ def set_image(file_location):
 
 #Set images and run function
 #img = set_image("../../test_images_kaggle/images/2017_BC015902_ CC_L.jpg")  #TODO: Image needs to be automatically inserted
-img = set_image("test_images_kaggle/images/2016_BC003122_ CC_R.jpg")  #TODO: Image needs to be automatically inserted
+dirname = os.path.dirname(__file__)
+filename = os.path.join(dirname,"test_images_kaggle/images/2016_BC003122_ CC_R.jpg")
+img = set_image(filename)  #TODO: Image needs to be automatically inserted
 
 crop_breasts(np.asarray([img]))  #np.asarray([img,img])
