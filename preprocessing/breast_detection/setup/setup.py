@@ -1,4 +1,10 @@
-"""Setup script for object_detection with TF2.0."""
+"""
+Setup script for object_detection with TF2.0.
+On this directory, setup the object detection packages by running the following CLI: 
+
+python -m pip install --use-feature=2020-resolver .
+
+"""
 import os
 from setuptools import find_packages
 from setuptools import setup
