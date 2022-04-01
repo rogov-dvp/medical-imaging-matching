@@ -17,9 +17,9 @@ class MainTesting(unittest.TestCase):
         Test that the function works as expected within the main
         """
         path = preprocess("2016_BC003122_ CC_L.npy")
-        print("here in test preprocess")
+
         self.assertEqual(
-            "../test_kaggle_images/processed_images/lcc/2016_BC003122_ CC_L.npy", path
+            "../test_images_kaggle/processed_images/lcc/2016_BC003122_ CC_L.npy", path
         )
 
     def test_matching_sim(self):
