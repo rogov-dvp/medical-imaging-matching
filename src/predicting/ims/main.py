@@ -56,8 +56,6 @@ def preprocess(up_file):
       string: filepath of the now processed image file.
   """
     pp_file = ""
-    print(up_file)
-    print(type(up_file))
     print("querying " + str(up_file))
     ppd = PreprocessData(up_file, processed_path, unprocessed_images)
     result = ppd.process_image()

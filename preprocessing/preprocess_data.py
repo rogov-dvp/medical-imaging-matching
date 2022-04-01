@@ -9,8 +9,6 @@ import numpy as np
 class PreprocessData:
     def __init__(self, filename, processed_path, unprocessed_path):
         self.filename = filename
-        # self.processed_path = "../test_images_kaggle/processed_images"
-        # self.unprocessed_images = "../test_images_kaggle/images"
         self.processed_path = processed_path
         self.unprocessed_images = unprocessed_path
 
