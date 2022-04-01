@@ -20,14 +20,26 @@ Barret Zoph, Vijay Vasudevan, Jonathon Shlens, Quoc V. Le
 https://arxiv.org/abs/1707.07012
 """
 
-import tensorflow as tf
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from six.moves import range
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
-from nets.nasnet import nasnet
-from nets.nasnet import nasnet_utils
+from object_detection.utils import variables_helper
 
-arg_scope = tf.contrib.framework.arg_scope
-slim = tf.contrib.slim
+# pylint: disable=g-import-not-at-top
+try:
+  from nets.nasnet import nasnet
+  from nets.nasnet import nasnet_utils
+except:  # pylint: disable=bare-except
+  pass
+# pylint: enable=g-import-not-at-top
+
+arg_scope = slim.arg_scope
 
 
 def nasnet_large_arg_scope_for_detection(is_batch_norm_training=False):
@@ -307,7 +319,7 @@ class FasterRCNNNASFeatureExtractor(
     # Note that the NAS checkpoint only contains the moving average version of
     # the Variables so we need to generate an appropriate dictionary mapping.
     variables_to_restore = {}
-    for variable in tf.global_variables():
+    for variable in variables_helper.get_global_variables_safely():
       if variable.op.name.startswith(
           first_stage_feature_extractor_scope):
         var_name = variable.op.name.replace(
@@ -321,4 +333,3 @@ class FasterRCNNNASFeatureExtractor(
         var_name += '/ExponentialMovingAverage'
         variables_to_restore[var_name] = variable
     return variables_to_restore
-

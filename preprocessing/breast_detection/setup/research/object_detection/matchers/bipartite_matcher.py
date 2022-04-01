@@ -15,7 +15,7 @@
 
 """Bipartite matcher implementation."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from tensorflow.contrib.image.python.ops import image_ops
 from object_detection.core import matcher
@@ -62,7 +62,7 @@ class GreedyBipartiteMatcher(matcher.Matcher):
     # Convert similarity matrix to distance matrix as tf.image.bipartite tries
     # to find minimum distance matches.
     distance_matrix = -1 * similarity_matrix
-    num_valid_rows = tf.reduce_sum(tf.to_float(valid_rows))
+    num_valid_rows = tf.reduce_sum(tf.cast(valid_rows, dtype=tf.float32))
     _, match_results = image_ops.bipartite_match(
         distance_matrix, num_valid_rows=num_valid_rows)
     match_results = tf.reshape(match_results, [-1])

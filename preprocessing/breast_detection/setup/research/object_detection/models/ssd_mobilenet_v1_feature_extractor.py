@@ -15,7 +15,8 @@
 
 """SSDFeatureExtractor for MobilenetV1 features."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -23,8 +24,6 @@ from object_detection.utils import context_manager
 from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import mobilenet_v1
-
-slim = tf.contrib.slim
 
 
 class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -39,6 +38,7 @@ class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               num_layers=6,
                override_base_feature_extractor_hyperparams=False):
     """MobileNetV1 Feature Extractor for SSD Models.
 
@@ -56,6 +56,7 @@ class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         inputs so that the output dimensions are the same as if 'SAME' padding
         were used.
       use_depthwise: Whether to use depthwise convolutions. Default is False.
+      num_layers: Number of SSD layers.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -69,6 +70,7 @@ class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         reuse_weights=reuse_weights,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
+        num_layers=num_layers,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams)
 
@@ -103,8 +105,8 @@ class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
 
     feature_map_layout = {
         'from_layer': ['Conv2d_11_pointwise', 'Conv2d_13_pointwise', '', '',
-                       '', ''],
-        'layer_depth': [-1, -1, 512, 256, 256, 128],
+                       '', ''][:self._num_layers],
+        'layer_depth': [-1, -1, 512, 256, 256, 128][:self._num_layers],
         'use_explicit_padding': self._use_explicit_padding,
         'use_depthwise': self._use_depthwise,
     }
@@ -132,4 +134,4 @@ class SSDMobileNetV1FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
             insert_1x1_conv=True,
             image_features=image_features)
 
-    return feature_maps.values()
+    return list(feature_maps.values())

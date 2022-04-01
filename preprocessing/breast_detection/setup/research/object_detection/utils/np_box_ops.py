@@ -19,6 +19,11 @@ Example box operations that are supported:
   * Areas: compute bounding box areas
   * IOU: pairwise intersection-over-union scores
 """
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import numpy as np
 
 
@@ -65,7 +70,7 @@ def iou(boxes1, boxes2):
 
   Args:
     boxes1: a numpy array with shape [N, 4] holding N boxes.
-    boxes2: a numpy array with shape [M, 4] holding N boxes.
+    boxes2: a numpy array with shape [M, 4] holding M boxes.
 
   Returns:
     a numpy array with shape [N, M] representing pairwise iou scores.
@@ -87,7 +92,7 @@ def ioa(boxes1, boxes2):
 
   Args:
     boxes1: a numpy array with shape [N, 4] holding N boxes.
-    boxes2: a numpy array with shape [M, 4] holding N boxes.
+    boxes2: a numpy array with shape [M, 4] holding M boxes.
 
   Returns:
     a numpy array with shape [N, M] representing pairwise ioa scores.

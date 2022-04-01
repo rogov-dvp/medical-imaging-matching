@@ -15,14 +15,32 @@
 
 """Helper functions for manipulating collections of variables during training.
 """
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import logging
+import os
 import re
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from tensorflow.python.ops import variables as tf_variables
 
-slim = tf.contrib.slim
+
+# Maps checkpoint types to variable name prefixes that are no longer
+# supported
+DETECTION_FEATURE_EXTRACTOR_MSG = """\
+The checkpoint type 'detection' is not supported when it contains variable
+names with 'feature_extractor'. Please download the new checkpoint file
+from model zoo.
+"""
+
+DEPRECATED_CHECKPOINT_MAP = {
+    'detection': ('feature_extractor', DETECTION_FEATURE_EXTRACTOR_MSG)
+}
 
 
 # TODO(derekjchow): Consider replacing with tf.contrib.filter_variables in
@@ -44,7 +62,7 @@ def filter_variables(variables, filter_regex_list, invert=False):
     a list of filtered variables.
   """
   kept_vars = []
-  variables_to_ignore_patterns = list(filter(None, filter_regex_list))
+  variables_to_ignore_patterns = list([fre for fre in filter_regex_list if fre])
   for var in variables:
     add = True
     for pattern in variables_to_ignore_patterns:
@@ -151,5 +169,62 @@ def get_variables_available_in_checkpoint(variables,
       logging.warning('Variable [%s] is not available in checkpoint',
                       variable_name)
   if isinstance(variables, list):
-    return vars_in_ckpt.values()
+    return list(vars_in_ckpt.values())
   return vars_in_ckpt
+
+
+def get_global_variables_safely():
+  """If not executing eagerly, returns tf.global_variables().
+
+  Raises a ValueError if eager execution is enabled,
+  because the variables are not tracked when executing eagerly.
+
+  If executing eagerly, use a Keras model's .variables property instead.
+
+  Returns:
+    The result of tf.global_variables()
+  """
+  with tf.init_scope():
+    if tf.executing_eagerly():
+      raise ValueError("Global variables collection is not tracked when "
+                       "executing eagerly. Use a Keras model's `.variables` "
+                       "attribute instead.")
+  return tf.global_variables()
+
+
+def ensure_checkpoint_supported(checkpoint_path, checkpoint_type, model_dir):
+  """Ensures that the given checkpoint can be properly loaded.
+
+  Performs the following checks
+  1. Raises an error if checkpoint_path and model_dir are same.
+  2. Checks that checkpoint_path does not contain a deprecated checkpoint file
+     by inspecting its variables.
+
+  Args:
+    checkpoint_path: str, path to checkpoint.
+    checkpoint_type: str, denotes the type of checkpoint.
+    model_dir: The model directory to store intermediate training checkpoints.
+
+  Raises:
+    RuntimeError: If
+      1. We detect an deprecated checkpoint file.
+      2. model_dir and checkpoint_path are in the same directory.
+  """
+  variables = tf.train.list_variables(checkpoint_path)
+
+  if checkpoint_type in DEPRECATED_CHECKPOINT_MAP:
+    blocked_prefix, msg = DEPRECATED_CHECKPOINT_MAP[checkpoint_type]
+    for var_name, _ in variables:
+      if var_name.startswith(blocked_prefix):
+        tf.logging.error('Found variable name - %s with prefix %s', var_name,
+                         blocked_prefix)
+        raise RuntimeError(msg)
+
+  checkpoint_path_dir = os.path.abspath(os.path.dirname(checkpoint_path))
+  model_dir = os.path.abspath(model_dir)
+
+  if model_dir == checkpoint_path_dir:
+    raise RuntimeError(
+        ('Checkpoint dir ({}) and model_dir ({}) cannot be same.'.format(
+            checkpoint_path_dir, model_dir) +
+         (' Please set model_dir to a different path.')))

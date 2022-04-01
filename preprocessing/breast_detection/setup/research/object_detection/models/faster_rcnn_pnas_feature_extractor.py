@@ -18,14 +18,24 @@
 Based on PNASNet model: https://arxiv.org/abs/1712.00559
 """
 
-import tensorflow as tf
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from six.moves import range
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
+from object_detection.utils import variables_helper
 from nets.nasnet import nasnet_utils
-from nets.nasnet import pnasnet
 
-arg_scope = tf.contrib.framework.arg_scope
-slim = tf.contrib.slim
+try:
+  from nets.nasnet import pnasnet  # pylint: disable=g-import-not-at-top
+except:  # pylint: disable=bare-except
+  pass
+
+arg_scope = slim.arg_scope
 
 
 def pnasnet_large_arg_scope_for_detection(is_batch_norm_training=False):
@@ -302,7 +312,7 @@ class FasterRCNNPNASFeatureExtractor(
       the model graph.
     """
     variables_to_restore = {}
-    for variable in tf.global_variables():
+    for variable in variables_helper.get_global_variables_safely():
       if variable.op.name.startswith(
           first_stage_feature_extractor_scope):
         var_name = variable.op.name.replace(

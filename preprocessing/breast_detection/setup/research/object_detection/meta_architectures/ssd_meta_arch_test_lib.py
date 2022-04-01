@@ -15,7 +15,7 @@
 """Helper functions for SSD models meta architecture tests."""
 
 import functools
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from google.protobuf import text_format
 
 from object_detection.builders import post_processing_builder
@@ -32,8 +32,16 @@ from object_detection.protos import model_pb2
 from object_detection.utils import ops
 from object_detection.utils import test_case
 from object_detection.utils import test_utils
+from object_detection.utils import tf_version
 
-slim = tf.contrib.slim
+# pylint: disable=g-import-not-at-top
+try:
+  import tf_slim as slim
+except ImportError:
+  # TF 2.0 doesn't ship with contrib.
+  pass
+# pylint: enable=g-import-not-at-top
+
 keras = tf.keras.layers
 
 
@@ -125,14 +133,15 @@ class SSDMetaArchTestBase(test_case.TestCase):
       expected_loss_weights=model_pb2.DetectionModel().ssd.loss.NONE,
       min_num_negative_samples=1,
       desired_negative_sampling_ratio=3,
-      use_keras=False,
       predict_mask=False,
       use_static_shapes=False,
       nms_max_size_per_class=5,
-      calibration_mapping_value=None):
+      calibration_mapping_value=None,
+      return_raw_detections_during_predict=False):
     is_training = False
     num_classes = 1
     mock_anchor_generator = MockAnchorGenerator2x2()
+    use_keras = tf_version.is_tf2()
     if use_keras:
       mock_box_predictor = test_utils.MockKerasBoxPredictor(
           is_training, num_classes, add_background_class=add_background_class)
@@ -238,6 +247,8 @@ class SSDMetaArchTestBase(test_case.TestCase):
         add_background_class=add_background_class,
         random_example_sampler=random_example_sampler,
         expected_loss_weights_fn=expected_loss_weights_fn,
+        return_raw_detections_during_predict=(
+            return_raw_detections_during_predict),
         **kwargs)
     return model, num_classes, mock_anchor_generator.num_anchors(), code_size
 
@@ -246,7 +257,3 @@ class SSDMetaArchTestBase(test_case.TestCase):
       if key.endswith(suffix):
         return dictionary[key]
     raise ValueError('key not found {}'.format(suffix))
-
-
-if __name__ == '__main__':
-  tf.test.main()

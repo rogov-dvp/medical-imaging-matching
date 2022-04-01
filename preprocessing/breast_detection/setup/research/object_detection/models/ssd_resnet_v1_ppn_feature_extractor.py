@@ -14,7 +14,8 @@
 # ==============================================================================
 """SSD feature extractors based on Resnet v1 and PPN architectures."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -22,8 +23,6 @@ from object_detection.utils import context_manager
 from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import resnet_v1
-
-slim = tf.contrib.slim
 
 
 class _SSDResnetPpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -161,7 +160,7 @@ class _SSDResnetPpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
             image_features={
                 'image_features': self._filter_features(activations)['block3']
             })
-    return feature_maps.values()
+    return list(feature_maps.values())
 
 
 class SSDResnet50V1PpnFeatureExtractor(_SSDResnetPpnFeatureExtractor):

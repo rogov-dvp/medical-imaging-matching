@@ -17,7 +17,13 @@
 See https://arxiv.org/abs/1708.02002 for details.
 """
 
-import tensorflow as tf
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from six.moves import range
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
@@ -26,10 +32,8 @@ from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import resnet_v1
 
-slim = tf.contrib.slim
 
-
-class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
+class SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
   """SSD FPN feature extractor based on Resnet v1 architecture."""
 
   def __init__(self,
@@ -47,6 +51,7 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               use_native_resize_op=False,
                override_base_feature_extractor_hyperparams=False):
     """SSD FPN feature extractor based on Resnet v1 architecture.
 
@@ -77,6 +82,8 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False. UNUSED currently.
       use_depthwise: Whether to use depthwise convolutions. UNUSED currently.
+      use_native_resize_op: Whether to use tf.image.nearest_neighbor_resize
+        to do upsampling in FPN. Default is false.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -84,7 +91,7 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     Raises:
       ValueError: On supplying invalid arguments for unused arguments.
     """
-    super(_SSDResnetV1FpnFeatureExtractor, self).__init__(
+    super(SSDResnetV1FpnFeatureExtractor, self).__init__(
         is_training=is_training,
         depth_multiplier=depth_multiplier,
         min_depth=min_depth,
@@ -103,6 +110,7 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     self._fpn_min_level = fpn_min_level
     self._fpn_max_level = fpn_max_level
     self._additional_layer_depth = additional_layer_depth
+    self._use_native_resize_op = use_native_resize_op
 
   def preprocess(self, resized_inputs):
     """SSD preprocessing.
@@ -178,7 +186,8 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
             feature_block_list.append('block{}'.format(level - 1))
           fpn_features = feature_map_generators.fpn_top_down_feature_maps(
               [(key, image_features[key]) for key in feature_block_list],
-              depth=depth_fn(self._additional_layer_depth))
+              depth=depth_fn(self._additional_layer_depth),
+              use_native_resize_op=self._use_native_resize_op)
           feature_maps = []
           for level in range(self._fpn_min_level, base_fpn_max_level + 1):
             feature_maps.append(
@@ -198,7 +207,7 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     return feature_maps
 
 
-class SSDResnet50V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
+class SSDResnet50V1FpnFeatureExtractor(SSDResnetV1FpnFeatureExtractor):
   """SSD Resnet50 V1 FPN feature extractor."""
 
   def __init__(self,
@@ -213,6 +222,7 @@ class SSDResnet50V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               use_native_resize_op=False,
                override_base_feature_extractor_hyperparams=False):
     """SSD Resnet50 V1 FPN feature extractor based on Resnet v1 architecture.
 
@@ -232,6 +242,8 @@ class SSDResnet50V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False. UNUSED currently.
       use_depthwise: Whether to use depthwise convolutions. UNUSED currently.
+      use_native_resize_op: Whether to use tf.image.nearest_neighbor_resize
+        to do upsampling in FPN. Default is false.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -251,11 +263,12 @@ class SSDResnet50V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
         reuse_weights=reuse_weights,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
+        use_native_resize_op=use_native_resize_op,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams)
 
 
-class SSDResnet101V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
+class SSDResnet101V1FpnFeatureExtractor(SSDResnetV1FpnFeatureExtractor):
   """SSD Resnet101 V1 FPN feature extractor."""
 
   def __init__(self,
@@ -270,6 +283,7 @@ class SSDResnet101V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               use_native_resize_op=False,
                override_base_feature_extractor_hyperparams=False):
     """SSD Resnet101 V1 FPN feature extractor based on Resnet v1 architecture.
 
@@ -289,6 +303,8 @@ class SSDResnet101V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False. UNUSED currently.
       use_depthwise: Whether to use depthwise convolutions. UNUSED currently.
+      use_native_resize_op: Whether to use tf.image.nearest_neighbor_resize
+        to do upsampling in FPN. Default is false.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -308,11 +324,12 @@ class SSDResnet101V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
         reuse_weights=reuse_weights,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
+        use_native_resize_op=use_native_resize_op,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams)
 
 
-class SSDResnet152V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
+class SSDResnet152V1FpnFeatureExtractor(SSDResnetV1FpnFeatureExtractor):
   """SSD Resnet152 V1 FPN feature extractor."""
 
   def __init__(self,
@@ -327,6 +344,7 @@ class SSDResnet152V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               use_native_resize_op=False,
                override_base_feature_extractor_hyperparams=False):
     """SSD Resnet152 V1 FPN feature extractor based on Resnet v1 architecture.
 
@@ -346,6 +364,8 @@ class SSDResnet152V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False. UNUSED currently.
       use_depthwise: Whether to use depthwise convolutions. UNUSED currently.
+      use_native_resize_op: Whether to use tf.image.nearest_neighbor_resize
+        to do upsampling in FPN. Default is false.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -365,5 +385,6 @@ class SSDResnet152V1FpnFeatureExtractor(_SSDResnetV1FpnFeatureExtractor):
         reuse_weights=reuse_weights,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
+        use_native_resize_op=use_native_resize_op,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams)

@@ -26,7 +26,7 @@ This matcher is used in Fast(er)-RCNN.
 Note: matchers are used in TargetAssigners. There is a create_target_assigner
 factory function for popular implementations.
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import matcher
 from object_detection.utils import shape_utils
@@ -184,7 +184,7 @@ class ArgMaxMatcher(matcher.Matcher):
         return matches
 
     if similarity_matrix.shape.is_fully_defined():
-      if similarity_matrix.shape[0].value == 0:
+      if shape_utils.get_dim_as_int(similarity_matrix.shape[0]) == 0:
         return _match_when_rows_are_empty()
       else:
         return _match_when_rows_are_non_empty()

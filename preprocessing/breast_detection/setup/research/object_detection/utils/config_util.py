@@ -14,10 +14,14 @@
 # ==============================================================================
 """Functions for reading and updating configuration files."""
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
-import tensorflow as tf
 
 from google.protobuf import text_format
+import tensorflow.compat.v1 as tf
 
 from tensorflow.python.lib.io import file_io
 
@@ -42,12 +46,13 @@ def get_image_resizer_config(model_config):
     ValueError: If the model type is not recognized.
   """
   meta_architecture = model_config.WhichOneof("model")
-  if meta_architecture == "faster_rcnn":
-    return model_config.faster_rcnn.image_resizer
-  if meta_architecture == "ssd":
-    return model_config.ssd.image_resizer
+  meta_architecture_config = getattr(model_config, meta_architecture)
 
-  raise ValueError("Unknown model type: {}".format(meta_architecture))
+  if hasattr(meta_architecture_config, "image_resizer"):
+    return getattr(meta_architecture_config, "image_resizer")
+  else:
+    raise ValueError("{} has no image_reszier_config".format(
+        meta_architecture))
 
 
 def get_spatial_image_size(image_resizer_config):
@@ -73,9 +78,45 @@ def get_spatial_image_size(image_resizer_config):
       return [image_resizer_config.keep_aspect_ratio_resizer.max_dimension] * 2
     else:
       return [-1, -1]
-  if image_resizer_config.HasField("identity_resizer"):
+  if image_resizer_config.HasField(
+      "identity_resizer") or image_resizer_config.HasField(
+          "conditional_shape_resizer"):
     return [-1, -1]
   raise ValueError("Unknown image resizer type.")
+
+
+def get_max_num_context_features(model_config):
+  """Returns maximum number of context features from a given config.
+
+  Args:
+    model_config: A model config file.
+
+  Returns:
+    An integer specifying the max number of context features if the model
+      config contains context_config, None otherwise
+
+  """
+  meta_architecture = model_config.WhichOneof("model")
+  meta_architecture_config = getattr(model_config, meta_architecture)
+
+  if hasattr(meta_architecture_config, "context_config"):
+    return meta_architecture_config.context_config.max_num_context_features
+
+
+def get_context_feature_length(model_config):
+  """Returns context feature length from a given config.
+
+  Args:
+    model_config: A model config file.
+
+  Returns:
+    An integer specifying the fixed length of each feature in context_features.
+  """
+  meta_architecture = model_config.WhichOneof("model")
+  meta_architecture_config = getattr(model_config, meta_architecture)
+
+  if hasattr(meta_architecture_config, "context_config"):
+    return meta_architecture_config.context_config.context_feature_length
 
 
 def get_configs_from_pipeline_file(pipeline_config_path, config_override=None):
@@ -99,6 +140,35 @@ def get_configs_from_pipeline_file(pipeline_config_path, config_override=None):
   if config_override:
     text_format.Merge(config_override, pipeline_config)
   return create_configs_from_pipeline_proto(pipeline_config)
+
+
+def clear_fine_tune_checkpoint(pipeline_config_path,
+                               new_pipeline_config_path):
+  """Clears fine_tune_checkpoint and writes a new pipeline config file."""
+  configs = get_configs_from_pipeline_file(pipeline_config_path)
+  configs["train_config"].fine_tune_checkpoint = ""
+  configs["train_config"].load_all_detection_checkpoint_vars = False
+  pipeline_proto = create_pipeline_proto_from_configs(configs)
+  with tf.gfile.Open(new_pipeline_config_path, "wb") as f:
+    f.write(text_format.MessageToString(pipeline_proto))
+
+
+def update_fine_tune_checkpoint_type(train_config):
+  """Set `fine_tune_checkpoint_type` using `from_detection_checkpoint`.
+
+  `train_config.from_detection_checkpoint` field is deprecated. For backward
+  compatibility, this function sets `train_config.fine_tune_checkpoint_type`
+  based on `train_config.from_detection_checkpoint`.
+
+  Args:
+    train_config: train_pb2.TrainConfig proto object.
+
+  """
+  if not train_config.fine_tune_checkpoint_type:
+    if train_config.from_detection_checkpoint:
+      train_config.fine_tune_checkpoint_type = "detection"
+    else:
+      train_config.fine_tune_checkpoint_type = "classification"
 
 
 def create_configs_from_pipeline_proto(pipeline_config):
@@ -257,12 +327,12 @@ def get_number_of_classes(model_config):
     ValueError: If the model type is not recognized.
   """
   meta_architecture = model_config.WhichOneof("model")
-  if meta_architecture == "faster_rcnn":
-    return model_config.faster_rcnn.num_classes
-  if meta_architecture == "ssd":
-    return model_config.ssd.num_classes
+  meta_architecture_config = getattr(model_config, meta_architecture)
 
-  raise ValueError("Expected the model to be one of 'faster_rcnn' or 'ssd'.")
+  if hasattr(meta_architecture_config, "num_classes"):
+    return meta_architecture_config.num_classes
+  else:
+    raise ValueError("{} does not have num_classes.".format(meta_architecture))
 
 
 def get_optimizer_type(train_config):
@@ -546,6 +616,35 @@ def _maybe_update_config_with_key_value(configs, key, value):
     _update_retain_original_images(configs["eval_config"], value)
   elif field_name == "use_bfloat16":
     _update_use_bfloat16(configs, value)
+  elif field_name == "retain_original_image_additional_channels_in_eval":
+    _update_retain_original_image_additional_channels(configs["eval_config"],
+                                                      value)
+  elif field_name == "num_classes":
+    _update_num_classes(configs["model"], value)
+  elif field_name == "sample_from_datasets_weights":
+    _update_sample_from_datasets_weights(configs["train_input_config"], value)
+  elif field_name == "peak_max_pool_kernel_size":
+    _update_peak_max_pool_kernel_size(configs["model"], value)
+  elif field_name == "candidate_search_scale":
+    _update_candidate_search_scale(configs["model"], value)
+  elif field_name == "candidate_ranking_mode":
+    _update_candidate_ranking_mode(configs["model"], value)
+  elif field_name == "score_distance_offset":
+    _update_score_distance_offset(configs["model"], value)
+  elif field_name == "box_scale":
+    _update_box_scale(configs["model"], value)
+  elif field_name == "keypoint_candidate_score_threshold":
+    _update_keypoint_candidate_score_threshold(configs["model"], value)
+  elif field_name == "rescore_instances":
+    _update_rescore_instances(configs["model"], value)
+  elif field_name == "unmatched_keypoint_score":
+    _update_unmatched_keypoint_score(configs["model"], value)
+  elif field_name == "score_distance_multiplier":
+    _update_score_distance_multiplier(configs["model"], value)
+  elif field_name == "std_dev_multiplier":
+    _update_std_dev_multiplier(configs["model"], value)
+  elif field_name == "rescoring_threshold":
+    _update_rescoring_threshold(configs["model"], value)
   else:
     return False
   return True
@@ -856,11 +955,6 @@ def _update_train_steps(configs, train_steps):
   configs["train_config"].num_steps = int(train_steps)
 
 
-def _update_eval_steps(configs, eval_steps):
-  """Updates `configs` to reflect new number of eval steps per evaluation."""
-  configs["eval_config"].num_examples = int(eval_steps)
-
-
 def _update_all_eval_input_configs(configs, field, value):
   """Updates the content of `field` with `value` for all eval input configs."""
   for eval_input_config in configs["eval_input_configs"]:
@@ -879,6 +973,8 @@ def _update_label_map_path(configs, label_map_path):
   """
   configs["train_input_config"].label_map_path = label_map_path
   _update_all_eval_input_configs(configs, "label_map_path", label_map_path)
+
+
 
 
 def _update_mask_type(configs, mask_type):
@@ -934,3 +1030,242 @@ def _update_use_bfloat16(configs, use_bfloat16):
     use_bfloat16: A bool, indicating whether to use bfloat16 for training.
   """
   configs["train_config"].use_bfloat16 = use_bfloat16
+
+
+def _update_retain_original_image_additional_channels(
+    eval_config,
+    retain_original_image_additional_channels):
+  """Updates eval config to retain original image additional channels or not.
+
+  The eval_config object is updated in place, and hence not returned.
+
+  Args:
+    eval_config: A eval_pb2.EvalConfig.
+    retain_original_image_additional_channels: Boolean indicating whether to
+      retain original image additional channels in eval mode.
+  """
+  eval_config.retain_original_image_additional_channels = (
+      retain_original_image_additional_channels)
+
+
+def remove_unnecessary_ema(variables_to_restore, no_ema_collection=None):
+  """Remap and Remove EMA variable that are not created during training.
+
+  ExponentialMovingAverage.variables_to_restore() returns a map of EMA names
+  to tf variables to restore. E.g.:
+  {
+      conv/batchnorm/gamma/ExponentialMovingAverage: conv/batchnorm/gamma,
+      conv_4/conv2d_params/ExponentialMovingAverage: conv_4/conv2d_params,
+      global_step: global_step
+  }
+  This function takes care of the extra ExponentialMovingAverage variables
+  that get created during eval but aren't available in the checkpoint, by
+  remapping the key to the variable itself, and remove the entry of its EMA from
+  the variables to restore. An example resulting dictionary would look like:
+  {
+      conv/batchnorm/gamma: conv/batchnorm/gamma,
+      conv_4/conv2d_params: conv_4/conv2d_params,
+      global_step: global_step
+  }
+  Args:
+    variables_to_restore: A dictionary created by ExponentialMovingAverage.
+      variables_to_restore().
+    no_ema_collection: A list of namescope substrings to match the variables
+      to eliminate EMA.
+
+  Returns:
+    A variables_to_restore dictionary excluding the collection of unwanted
+    EMA mapping.
+  """
+  if no_ema_collection is None:
+    return variables_to_restore
+
+  restore_map = {}
+  for key in variables_to_restore:
+    if ("ExponentialMovingAverage" in key
+        and any([name in key for name in no_ema_collection])):
+      new_key = key.replace("/ExponentialMovingAverage", "")
+    else:
+      new_key = key
+    restore_map[new_key] = variables_to_restore[key]
+  return restore_map
+
+
+def _update_num_classes(model_config, num_classes):
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "faster_rcnn":
+    model_config.faster_rcnn.num_classes = num_classes
+  if meta_architecture == "ssd":
+    model_config.ssd.num_classes = num_classes
+
+
+def _update_sample_from_datasets_weights(input_reader_config, weights):
+  """Updated sample_from_datasets_weights with overrides."""
+  if len(weights) != len(input_reader_config.sample_from_datasets_weights):
+    raise ValueError(
+        "sample_from_datasets_weights override has a different number of values"
+        " ({}) than the configured dataset weights ({})."
+        .format(
+            len(input_reader_config.sample_from_datasets_weights),
+            len(weights)))
+
+  del input_reader_config.sample_from_datasets_weights[:]
+  input_reader_config.sample_from_datasets_weights.extend(weights)
+
+
+def _update_peak_max_pool_kernel_size(model_config, kernel_size):
+  """Updates the max pool kernel size (NMS) for keypoints in CenterNet."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.peak_max_pool_kernel_size = kernel_size
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "peak_max_pool_kernel_size since there are multiple "
+                         "keypoint estimation tasks")
+
+
+def _update_candidate_search_scale(model_config, search_scale):
+  """Updates the keypoint candidate search scale in CenterNet."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.candidate_search_scale = search_scale
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "candidate_search_scale since there are multiple "
+                         "keypoint estimation tasks")
+
+
+def _update_candidate_ranking_mode(model_config, mode):
+  """Updates how keypoints are snapped to candidates in CenterNet."""
+  if mode not in ("min_distance", "score_distance_ratio",
+                  "score_scaled_distance_ratio", "gaussian_weighted"):
+    raise ValueError("Attempting to set the keypoint candidate ranking mode "
+                     "to {}, but the only options are 'min_distance', "
+                     "'score_distance_ratio', 'score_scaled_distance_ratio', "
+                     "'gaussian_weighted'.".format(mode))
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.candidate_ranking_mode = mode
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "candidate_ranking_mode since there are multiple "
+                         "keypoint estimation tasks")
+
+
+def _update_score_distance_offset(model_config, offset):
+  """Updates the keypoint candidate selection metric. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.score_distance_offset = offset
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "score_distance_offset since there are multiple "
+                         "keypoint estimation tasks")
+
+
+def _update_box_scale(model_config, box_scale):
+  """Updates the keypoint candidate search region. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.box_scale = box_scale
+    else:
+      tf.logging.warning("Ignoring config override key for box_scale since "
+                         "there are multiple keypoint estimation tasks")
+
+
+def _update_keypoint_candidate_score_threshold(model_config, threshold):
+  """Updates the keypoint candidate score threshold. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.keypoint_candidate_score_threshold = threshold
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "keypoint_candidate_score_threshold since there are "
+                         "multiple keypoint estimation tasks")
+
+
+def _update_rescore_instances(model_config, should_rescore):
+  """Updates whether boxes should be rescored based on keypoint confidences."""
+  if isinstance(should_rescore, str):
+    should_rescore = True if should_rescore == "True" else False
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.rescore_instances = should_rescore
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "rescore_instances since there are multiple keypoint "
+                         "estimation tasks")
+
+
+def _update_unmatched_keypoint_score(model_config, score):
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.unmatched_keypoint_score = score
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "unmatched_keypoint_score since there are multiple "
+                         "keypoint estimation tasks")
+
+
+def _update_score_distance_multiplier(model_config, score_distance_multiplier):
+  """Updates the keypoint candidate selection metric. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.score_distance_multiplier = score_distance_multiplier
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "score_distance_multiplier since there are multiple "
+                         "keypoint estimation tasks")
+  else:
+    raise ValueError(
+        "Unsupported meta_architecture type: %s" % meta_architecture)
+
+
+def _update_std_dev_multiplier(model_config, std_dev_multiplier):
+  """Updates the keypoint candidate selection metric. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.std_dev_multiplier = std_dev_multiplier
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "std_dev_multiplier since there are multiple "
+                         "keypoint estimation tasks")
+  else:
+    raise ValueError(
+        "Unsupported meta_architecture type: %s" % meta_architecture)
+
+
+def _update_rescoring_threshold(model_config, rescoring_threshold):
+  """Updates the keypoint candidate selection metric. See CenterNet proto."""
+  meta_architecture = model_config.WhichOneof("model")
+  if meta_architecture == "center_net":
+    if len(model_config.center_net.keypoint_estimation_task) == 1:
+      kpt_estimation_task = model_config.center_net.keypoint_estimation_task[0]
+      kpt_estimation_task.rescoring_threshold = rescoring_threshold
+    else:
+      tf.logging.warning("Ignoring config override key for "
+                         "rescoring_threshold since there are multiple "
+                         "keypoint estimation tasks")
+  else:
+    raise ValueError(
+        "Unsupported meta_architecture type: %s" % meta_architecture)

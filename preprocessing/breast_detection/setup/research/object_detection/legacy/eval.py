@@ -44,8 +44,8 @@ Example usage:
 """
 import functools
 import os
-import tensorflow as tf
-
+import tensorflow.compat.v1 as tf
+from tensorflow.python.util.deprecation import deprecated
 from object_detection.builders import dataset_builder
 from object_detection.builders import graph_rewriter_builder
 from object_detection.builders import model_builder
@@ -80,7 +80,7 @@ flags.DEFINE_boolean(
 FLAGS = flags.FLAGS
 
 
-@tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
+@deprecated(None, 'Use object_detection/model_main.py.')
 def main(unused_argv):
   assert FLAGS.checkpoint_dir, '`checkpoint_dir` is missing.'
   assert FLAGS.eval_dir, '`eval_dir` is missing.'

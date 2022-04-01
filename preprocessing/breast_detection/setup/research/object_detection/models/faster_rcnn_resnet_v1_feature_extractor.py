@@ -24,13 +24,12 @@ the MSRA provided checkpoints
 (see https://github.com/KaimingHe/deep-residual-networks), e.g., with
 same preprocessing, batch norm scaling, etc.
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import faster_rcnn_meta_arch
 from nets import resnet_utils
 from nets import resnet_v1
-
-slim = tf.contrib.slim
 
 
 class FasterRCNNResnetV1FeatureExtractor(
@@ -44,7 +43,8 @@ class FasterRCNNResnetV1FeatureExtractor(
                first_stage_features_stride,
                batch_norm_trainable=False,
                reuse_weights=None,
-               weight_decay=0.0):
+               weight_decay=0.0,
+               activation_fn=tf.nn.relu):
     """Constructor.
 
     Args:
@@ -55,6 +55,7 @@ class FasterRCNNResnetV1FeatureExtractor(
       batch_norm_trainable: See base class.
       reuse_weights: See base class.
       weight_decay: See base class.
+      activation_fn: Activaton functon to use in Resnet V1 model.
 
     Raises:
       ValueError: If `first_stage_features_stride` is not 8 or 16.
@@ -63,9 +64,10 @@ class FasterRCNNResnetV1FeatureExtractor(
       raise ValueError('`first_stage_features_stride` must be 8 or 16.')
     self._architecture = architecture
     self._resnet_model = resnet_model
-    super(FasterRCNNResnetV1FeatureExtractor, self).__init__(
-        is_training, first_stage_features_stride, batch_norm_trainable,
-        reuse_weights, weight_decay)
+    self._activation_fn = activation_fn
+    super(FasterRCNNResnetV1FeatureExtractor,
+          self).__init__(is_training, first_stage_features_stride,
+                         batch_norm_trainable, reuse_weights, weight_decay)
 
   def preprocess(self, resized_inputs):
     """Faster R-CNN Resnet V1 preprocessing.
@@ -125,6 +127,7 @@ class FasterRCNNResnetV1FeatureExtractor(
           resnet_utils.resnet_arg_scope(
               batch_norm_epsilon=1e-5,
               batch_norm_scale=True,
+              activation_fn=self._activation_fn,
               weight_decay=self._weight_decay)):
         with tf.variable_scope(
             self._architecture, reuse=self._reuse_weights) as var_scope:
@@ -159,6 +162,7 @@ class FasterRCNNResnetV1FeatureExtractor(
           resnet_utils.resnet_arg_scope(
               batch_norm_epsilon=1e-5,
               batch_norm_scale=True,
+              activation_fn=self._activation_fn,
               weight_decay=self._weight_decay)):
         with slim.arg_scope([slim.batch_norm],
                             is_training=self._train_batch_norm):
@@ -182,7 +186,8 @@ class FasterRCNNResnet50FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
                first_stage_features_stride,
                batch_norm_trainable=False,
                reuse_weights=None,
-               weight_decay=0.0):
+               weight_decay=0.0,
+               activation_fn=tf.nn.relu):
     """Constructor.
 
     Args:
@@ -191,15 +196,16 @@ class FasterRCNNResnet50FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
       batch_norm_trainable: See base class.
       reuse_weights: See base class.
       weight_decay: See base class.
+      activation_fn: See base class.
 
     Raises:
       ValueError: If `first_stage_features_stride` is not 8 or 16,
         or if `architecture` is not supported.
     """
-    super(FasterRCNNResnet50FeatureExtractor, self).__init__(
-        'resnet_v1_50', resnet_v1.resnet_v1_50, is_training,
-        first_stage_features_stride, batch_norm_trainable,
-        reuse_weights, weight_decay)
+    super(FasterRCNNResnet50FeatureExtractor,
+          self).__init__('resnet_v1_50', resnet_v1.resnet_v1_50, is_training,
+                         first_stage_features_stride, batch_norm_trainable,
+                         reuse_weights, weight_decay, activation_fn)
 
 
 class FasterRCNNResnet101FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
@@ -210,7 +216,8 @@ class FasterRCNNResnet101FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
                first_stage_features_stride,
                batch_norm_trainable=False,
                reuse_weights=None,
-               weight_decay=0.0):
+               weight_decay=0.0,
+               activation_fn=tf.nn.relu):
     """Constructor.
 
     Args:
@@ -219,15 +226,16 @@ class FasterRCNNResnet101FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
       batch_norm_trainable: See base class.
       reuse_weights: See base class.
       weight_decay: See base class.
+      activation_fn: See base class.
 
     Raises:
       ValueError: If `first_stage_features_stride` is not 8 or 16,
         or if `architecture` is not supported.
     """
-    super(FasterRCNNResnet101FeatureExtractor, self).__init__(
-        'resnet_v1_101', resnet_v1.resnet_v1_101, is_training,
-        first_stage_features_stride, batch_norm_trainable,
-        reuse_weights, weight_decay)
+    super(FasterRCNNResnet101FeatureExtractor,
+          self).__init__('resnet_v1_101', resnet_v1.resnet_v1_101, is_training,
+                         first_stage_features_stride, batch_norm_trainable,
+                         reuse_weights, weight_decay, activation_fn)
 
 
 class FasterRCNNResnet152FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
@@ -238,7 +246,8 @@ class FasterRCNNResnet152FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
                first_stage_features_stride,
                batch_norm_trainable=False,
                reuse_weights=None,
-               weight_decay=0.0):
+               weight_decay=0.0,
+               activation_fn=tf.nn.relu):
     """Constructor.
 
     Args:
@@ -247,12 +256,13 @@ class FasterRCNNResnet152FeatureExtractor(FasterRCNNResnetV1FeatureExtractor):
       batch_norm_trainable: See base class.
       reuse_weights: See base class.
       weight_decay: See base class.
+      activation_fn: See base class.
 
     Raises:
       ValueError: If `first_stage_features_stride` is not 8 or 16,
         or if `architecture` is not supported.
     """
-    super(FasterRCNNResnet152FeatureExtractor, self).__init__(
-        'resnet_v1_152', resnet_v1.resnet_v1_152, is_training,
-        first_stage_features_stride, batch_norm_trainable,
-        reuse_weights, weight_decay)
+    super(FasterRCNNResnet152FeatureExtractor,
+          self).__init__('resnet_v1_152', resnet_v1.resnet_v1_152, is_training,
+                         first_stage_features_stride, batch_norm_trainable,
+                         reuse_weights, weight_decay, activation_fn)

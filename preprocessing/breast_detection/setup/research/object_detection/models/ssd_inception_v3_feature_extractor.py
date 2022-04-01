@@ -14,15 +14,14 @@
 # ==============================================================================
 
 """SSDFeatureExtractor for InceptionV3 features."""
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim as slim
 
 from object_detection.meta_architectures import ssd_meta_arch
 from object_detection.models import feature_map_generators
 from object_detection.utils import ops
 from object_detection.utils import shape_utils
 from nets import inception_v3
-
-slim = tf.contrib.slim
 
 
 class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
@@ -37,6 +36,7 @@ class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
                reuse_weights=None,
                use_explicit_padding=False,
                use_depthwise=False,
+               num_layers=6,
                override_base_feature_extractor_hyperparams=False):
     """InceptionV3 Feature Extractor for SSD Models.
 
@@ -53,6 +53,7 @@ class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
       use_explicit_padding: Whether to use explicit padding when extracting
         features. Default is False.
       use_depthwise: Whether to use depthwise convolutions. Default is False.
+      num_layers: Number of SSD layers.
       override_base_feature_extractor_hyperparams: Whether to override
         hyperparameters of the base feature extractor with the one from
         `conv_hyperparams_fn`.
@@ -69,6 +70,7 @@ class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         reuse_weights=reuse_weights,
         use_explicit_padding=use_explicit_padding,
         use_depthwise=use_depthwise,
+        num_layers=num_layers,
         override_base_feature_extractor_hyperparams=
         override_base_feature_extractor_hyperparams)
 
@@ -109,8 +111,9 @@ class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
         33, preprocessed_inputs)
 
     feature_map_layout = {
-        'from_layer': ['Mixed_5d', 'Mixed_6e', 'Mixed_7c', '', '', ''],
-        'layer_depth': [-1, -1, -1, 512, 256, 128],
+        'from_layer': ['Mixed_5d', 'Mixed_6e', 'Mixed_7c', '', '', ''
+                      ][:self._num_layers],
+        'layer_depth': [-1, -1, -1, 512, 256, 128][:self._num_layers],
         'use_explicit_padding': self._use_explicit_padding,
         'use_depthwise': self._use_depthwise,
     }
@@ -130,4 +133,4 @@ class SSDInceptionV3FeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
             insert_1x1_conv=True,
             image_features=image_features)
 
-    return feature_maps.values()
+    return list(feature_maps.values())

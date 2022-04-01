@@ -15,7 +15,7 @@
 
 """Builder for preprocessing steps."""
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from object_detection.core import preprocessor
 from object_detection.protos import preprocessor_pb2
@@ -39,7 +39,7 @@ def _get_step_config_from_proto(preprocessor_step_config, step_name):
     if field.name == step_name:
       return value
 
-  raise ValueError('Could not get field %s from proto!', step_name)
+  raise ValueError('Could not get field %s from proto!' % step_name)
 
 
 def _get_dict_from_proto(config):
@@ -89,20 +89,26 @@ PREPROCESSING_FUNCTION_MAP = {
         preprocessor.random_adjust_saturation,
     'random_distort_color':
         preprocessor.random_distort_color,
-    'random_jitter_boxes':
-        preprocessor.random_jitter_boxes,
     'random_crop_to_aspect_ratio':
         preprocessor.random_crop_to_aspect_ratio,
     'random_black_patches':
         preprocessor.random_black_patches,
+    'random_jpeg_quality':
+        preprocessor.random_jpeg_quality,
+    'random_downscale_to_target_pixels':
+        preprocessor.random_downscale_to_target_pixels,
+    'random_patch_gaussian':
+        preprocessor.random_patch_gaussian,
     'rgb_to_gray':
         preprocessor.rgb_to_gray,
-    'scale_boxes_to_pixel_coordinates': (
-        preprocessor.scale_boxes_to_pixel_coordinates),
+    'scale_boxes_to_pixel_coordinates':
+        (preprocessor.scale_boxes_to_pixel_coordinates),
     'subtract_channel_mean':
         preprocessor.subtract_channel_mean,
     'convert_class_logits_to_softmax':
         preprocessor.convert_class_logits_to_softmax,
+    'adjust_gamma':
+        preprocessor.adjust_gamma,
 }
 
 
@@ -115,6 +121,16 @@ RESIZE_METHOD_MAP = {
     preprocessor_pb2.ResizeImage.NEAREST_NEIGHBOR: (
         tf.image.ResizeMethod.NEAREST_NEIGHBOR),
 }
+
+
+def get_random_jitter_kwargs(proto):
+  return {
+      'ratio':
+          proto.ratio,
+      'jitter_mode':
+          preprocessor_pb2.RandomJitterBoxes.JitterMode.Name(proto.jitter_mode
+                                                            ).lower()
+  }
 
 
 def build(preprocessor_step_config):
@@ -144,7 +160,8 @@ def build(preprocessor_step_config):
     return (preprocessor.random_horizontal_flip,
             {
                 'keypoint_flip_permutation': tuple(
-                    config.keypoint_flip_permutation),
+                    config.keypoint_flip_permutation) or None,
+                'probability': config.probability or None,
             })
 
   if step_type == 'random_vertical_flip':
@@ -152,11 +169,18 @@ def build(preprocessor_step_config):
     return (preprocessor.random_vertical_flip,
             {
                 'keypoint_flip_permutation': tuple(
-                    config.keypoint_flip_permutation),
+                    config.keypoint_flip_permutation) or None,
+                'probability': config.probability or None,
             })
 
   if step_type == 'random_rotation90':
-    return (preprocessor.random_rotation90, {})
+    config = preprocessor_step_config.random_rotation90
+    return (preprocessor.random_rotation90,
+            {
+                'keypoint_rot_permutation': tuple(
+                    config.keypoint_rot_permutation) or None,
+                'probability': config.probability or None,
+            })
 
   if step_type == 'random_crop_image':
     config = preprocessor_step_config.random_crop_image
@@ -194,7 +218,7 @@ def build(preprocessor_step_config):
       if len(pad_color) != 3:
         tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
-      pad_color = tf.to_float([x for x in config.pad_color])
+      pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
     return (preprocessor.random_pad_image,
             {
                 'min_image_size': min_image_size,
@@ -213,7 +237,7 @@ def build(preprocessor_step_config):
       if len(pad_color) != 3:
         tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
-      pad_color = tf.to_float([x for x in config.pad_color])
+      pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
 
     return (preprocessor.random_absolute_pad_image,
             {
@@ -234,7 +258,7 @@ def build(preprocessor_step_config):
       if len(pad_color) != 3:
         tf.logging.warn('pad_color should have 3 elements (RGB) if set!')
 
-      pad_color = tf.to_float([x for x in config.pad_color])
+      pad_color = tf.cast([x for x in config.pad_color], dtype=tf.float32)
 
     kwargs = {
         'min_object_covered': config.min_object_covered,
@@ -296,6 +320,26 @@ def build(preprocessor_step_config):
                   'random_coef': random_coef,
               })
     return (preprocessor.ssd_random_crop, {})
+
+  if step_type == 'autoaugment_image':
+    config = preprocessor_step_config.autoaugment_image
+    return (preprocessor.autoaugment_image, {
+        'policy_name': config.policy_name,
+    })
+
+  if step_type == 'drop_label_probabilistically':
+    config = preprocessor_step_config.drop_label_probabilistically
+    return (preprocessor.drop_label_probabilistically, {
+        'dropped_label': config.label,
+        'drop_probability': config.drop_probability,
+    })
+
+  if step_type == 'remap_labels':
+    config = preprocessor_step_config.remap_labels
+    return (preprocessor.remap_labels, {
+        'original_labels': config.original_labels,
+        'new_label': config.new_label
+    })
 
   if step_type == 'ssd_random_crop_pad':
     config = preprocessor_step_config.ssd_random_crop_pad
@@ -374,4 +418,26 @@ def build(preprocessor_step_config):
       kwargs['random_coef'] = [op.random_coef for op in config.operations]
     return (preprocessor.ssd_random_crop_pad_fixed_aspect_ratio, kwargs)
 
+  if step_type == 'random_square_crop_by_scale':
+    config = preprocessor_step_config.random_square_crop_by_scale
+    return preprocessor.random_square_crop_by_scale, {
+        'scale_min': config.scale_min,
+        'scale_max': config.scale_max,
+        'max_border': config.max_border,
+        'num_scales': config.num_scales
+    }
+
+  if step_type == 'random_scale_crop_and_pad_to_square':
+    config = preprocessor_step_config.random_scale_crop_and_pad_to_square
+    return preprocessor.random_scale_crop_and_pad_to_square, {
+        'scale_min': config.scale_min,
+        'scale_max': config.scale_max,
+        'output_size': config.output_size,
+    }
+
+
+  if step_type == 'random_jitter_boxes':
+    config = preprocessor_step_config.random_jitter_boxes
+    kwargs = get_random_jitter_kwargs(config)
+    return preprocessor.random_jitter_boxes, kwargs
   raise ValueError('Unknown preprocessing step.')
