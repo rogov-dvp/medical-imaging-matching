@@ -85,4 +85,7 @@
 - Adjust triplet model to run on resetup gpu
 - sort files for final training / parameter optimisation phase
 
-
+## 18) Train Models VGG and ResNet
+- Build architecture for ResNet
+- Train ResNet and VGG
+- Document training performance
