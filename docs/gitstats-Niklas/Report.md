@@ -89,3 +89,8 @@
 - Build architecture for ResNet
 - Train ResNet and VGG
 - Document training performance
+
+## 19) Write Tests for the model
+- Write test for the embedding network
+- Write test for the Siamese Triplet set up
+

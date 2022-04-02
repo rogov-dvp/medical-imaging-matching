@@ -77,3 +77,5 @@ The steps of the system are as follows:
    - Once all the images have been read and batches built, we will move onto training the model with `MainTrainCNN` which relies on `CNNTripletModel`.
    - Now that our model is trained, we can run it on the images in question from the `CSV` file.
 4. Return the similarity percentage found by the CNN.
+
+Due to some issues that have been discovered, we may not be able to integrate our model completely.
