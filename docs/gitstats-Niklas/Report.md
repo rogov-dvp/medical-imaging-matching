@@ -86,3 +86,8 @@
 - sort files for final training / parameter optimisation phase
 
 
+## 19) Write Tests for the model
+- Write test for the embedding network
+- Write test for the Siamese Triplet set up
+
+
