@@ -3,7 +3,7 @@
  - Issue #364
  - Solved some issues that were on the GPU regarding packaging. However, got issues when doing the last step and it had something to do with gpu memory error.
 
-2. Work on writing the unimplemented features of our project
+2. Writing the final report
  - April 6, 2022
  - Issue #372
  - Wrote our current implemented features and unimplemneted features. 
