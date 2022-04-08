@@ -28,6 +28,8 @@ from object_detection.utils import label_map_util
 from object_detection.builders import model_builder
 
 
+
+
 WORKSPACE_PATH = 'workspace'
 ANNOTATION_PATH = WORKSPACE_PATH+'/annotations'
 IMAGE_PATH = WORKSPACE_PATH+'/cropped_images'
@@ -58,39 +60,30 @@ def detect_fn(image):
     detections = detection_model.postprocess(prediction_dict, shapes)
     return detections
 
-def crop_breasts(images):
-    images_out = []
+def crop_breasts(image):
+    in_tensor = tf.convert_to_tensor(np.expand_dims(images[i],0), dtype=tf.float32)
+    detections = detect_fn(in_tensor)
 
-    for i in range(images.shape[0]):
-        in_tensor = tf.convert_to_tensor(np.expand_dims(images[i],0), dtype=tf.float32)
-        detections = detect_fn(in_tensor)
+    num_detections = int(detections.pop('num_detections'))
 
-        num_detections = int(detections.pop('num_detections'))
+    detections = {key: value[0, :num_detections].numpy()
+                for key, value in detections.items()}
 
-        detections = {key: value[0, :num_detections].numpy()
-                    for key, value in detections.items()}
-
-        if detections['detection_scores'][0] < 0.75:
-            print('Score < 0.75 for i=' + str(i))
+    if detections['detection_scores'][0] > 0.75:
         box = detections['detection_boxes'][0]
 
-        image_np_crop = images[i].copy()
         left = math.floor(box[0] * images.shape[1])
         right = math.ceil(box[2] * images.shape[1])
         bot = math.floor(box[1] * images.shape[1])
         top = math.ceil(box[3] * images.shape[1])
-        cropped_img = image_np_crop[left:right, bot:top]
-        name = './Image_' + str(i) + '_crop.jpeg'       #
-        cv2.imwrite(IMAGE_PATH +'/{}'.format(name) , cropped_img)
-
+        image = image[left:right, bot:top]
     
-    return np.asarray(images_out)
+    return np.asarray(image)
 
-# This function exists for reading cv2
-def set_image(file_location):
-    return cv2.imread(file_location)
 
 
 #Set images and run function
-img = set_image("../../test_images_kaggle/images/2017_BC015902_ CC_L.jpg")  #TODO: Image needs to be automatically inserted
-crop_breasts(np.asarray([img]))  #np.asarray([img,img])
+img = cv2.imread("../../test_images_kaggle/images/2017_BC015902_ CC_L.jpg") 
+cv2.imshow(img)
+#TODO: Image needs to be automatically inserted
+#crop_breasts(np.asarray([img]))  #np.asarray([img,img])
