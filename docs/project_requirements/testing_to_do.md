@@ -1,8 +1,8 @@
 # Testing
 
-## List of Testing to Implement
+## List of Testing to Implement - Peer Testing #1
 
-### Additional Unit Tests to Create:
+### Additional Unit Tests to Create
 
 #### Preprocessing
 
@@ -54,3 +54,14 @@ preprocess_triplets - ensure that the method returns what we expect.
 - [ ] `SiameseModel`
   - [ ] Ensure that all methods and attributes associated with this class return the type we expect and if applicable perform as expected with dummy data.
 - [ ] `cosine_similarity` - ensure that the return type is what we expect and that based on the dummy data we pass in the calculation is correct.
+
+## Overview of Testing - April 8th
+
+|Requirement|Test(s)|
+|:----------|:------|
+|Main Script|This script connects all the main features of the program. To test this we have utilized integration testing for the features that are currently integrated (using unit tests) and simply unit tested any remaining methods.|
+|CNN/Triplet Loss Function model|The CNN/Triplet Loss Function model is extensively tested. We have ensured that we have completed unit tests for each method, integration tests for any cross-file and feature methods, and regression testing. In fact, each model we have tried has been tested in this fashion. We also perform manual tests by looking at the output similarities and ensuring that the calculations make sense or are accurate.|
+|Resizing/Preprocessing|The resizing of images (ie. the preprocessing) is tested with integration and unit tests for each method.|
+|Breast Detection|Breast detection has undergone unit tests for each method.|
+|Batch Building|Batch Building has undergone unit and integration tests for each method.|
+|Data Augmentation|Data augmentation has undergone unit tests for each method.|

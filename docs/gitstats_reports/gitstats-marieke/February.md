@@ -15,8 +15,8 @@
 
 4. Addition of unit tests for batch builder
 - Februrary 11,2022
-- Issue #271 
-- Write unit tests for batch builder 
+- Issue #271
+- Write unit tests for batch builder
 
 5. Finalize unit testing for Batch Builder
 - Februrary 18,2022
