@@ -3,7 +3,7 @@
 1. Worked on getting a detection of 50 test mammograms.
   - January 28, 2021
   - Issue # 235
-  - I have the code mostly set except I now need to find the dimensions of the detections and cut it out with pillow or opencv. My current issue is that my M1 macbook doesnt run tensorflow. I written down the initial steps I took when doing this just in case:   
+  - I have the code mostly set except I now need to find the dimensions of the detections and cut it out with pillow or opencv. My current issue is that my M1 macbook doesnt run tensorflow. I written down the initial steps I took when doing this just in case:
 
 https://www.youtube.com/watch?v=IOI0o3Cxv9Q
 
@@ -17,7 +17,7 @@ Step for mask detection:
 2. /RealTimeObjectDetection/Tensorflow
 3. git clone https://github.com/tzutalin/labelImg.git
 4. pip3 install PyQt5
-5. pip3 install lmxl 
+5. pip3 install lmxl
 6. pyrcc5 -o resources.py resources.qrc
 7. Move both files to labelImg/libs
 8. python3 labelImg.py
