@@ -93,3 +93,9 @@
 ## 19) Write Tests for the model
 - Write test for the embedding network
 - Write test for the Siamese Triplet set up
+
+## 20) Apr 8 - Final Report and Breast Detection
+- Try various approaches together with alex to get the cropping running on the gpu, but either running into missing packages or space errors 
+- Work on the Final Report
+- work on the validation of the models and calculate accuracies for the models we trained
+
