@@ -6,4 +6,4 @@
 2. Writing the final report
  - April 6, 2022
  - Issue #372
- - Wrote our current implemented features and unimplemneted features. 
+ - Wrote our current implemented features and unimplemneted features.

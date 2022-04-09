@@ -19,10 +19,10 @@
 - Come up with a timeplan and build a gantt chart out of it containing the relations
 - Record voice for the requirements and gantt chart
 
-## 5) 
+## 5)
 - Work on the report writing detailed requirements section
 - Research triplet loss function which is wiedly used in face recognition
-- experiment with tensorflow and opencv 
+- experiment with tensorflow and opencv
 
 ## 6) Nov 21 - Build CNN Triplet Loss Skeleton and Prepare Peer Testing
 - Come up with script to train CNN using triplet loss
@@ -41,7 +41,7 @@
 - run further test, not yet working
 - experiment with reduced problem to find out whether the problem comes from parameters or if it is a code issue
 
-## 9) Feb 18 - Improve CNN 
+## 9) Feb 18 - Improve CNN
 - Train CNN in Siamese Similarity Setup on easy batch
 - Improve performance with hard batch finding function
 - research further improvement opportunities
@@ -76,10 +76,10 @@
 
 ## 16) Train and Evaluate
 - Train CNN with VGG Architecture in Siamese set up (two input mammograms)
-- Evaluate model 
+- Evaluate model
 	- 87% accurarcy on 10 one shot task
 	- clearly separable similarities for same/different patients mammograms fed
-	
+
 ## 17) Prepare for Triplet Loss
 - Start implementing the breast cropping algorithm into model
 - Adjust triplet model to run on resetup gpu
@@ -93,4 +93,3 @@
 ## 19) Write Tests for the model
 - Write test for the embedding network
 - Write test for the Siamese Triplet set up
-

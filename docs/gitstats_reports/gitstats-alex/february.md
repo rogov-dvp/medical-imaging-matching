@@ -11,4 +11,4 @@
 4. Continued wokring on mammogram. I got code that should have been working with model and it shows a picture with the label. But, I was having issues with the label showing. I think it might be the model which is the issue.
 - February 18, 2022
 - Issue #295
-- I got code that should have been working with model and it shows a picture with the label. But, I was having issues with the label showing. I think it might be the model which is the issue. I will continue working on this over the break 
+- I got code that should have been working with model and it shows a picture with the label. But, I was having issues with the label showing. I think it might be the model which is the issue. I will continue working on this over the break
