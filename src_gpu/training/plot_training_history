@@ -1,0 +1,66 @@
+from matplotlib import pyplot as plt
+import pandas as pd
+import numpy as np
+
+
+vgg_64_512 = pd.read_csv('./loss_histories/hist.vgg_64_512.csv', na_values=['nan'])
+vgg_64_1024 = pd.read_csv('./loss_histories/hist.vgg_64_1024.csv')
+vgg_64_2048 = pd.read_csv('./loss_histories/hist.vgg_64_2048.csv')
+
+vgg_128_512 = pd.read_csv('./loss_histories/hist.vgg_128_512.csv')
+vgg_128_1024 = pd.read_csv('./loss_histories/hist.vgg_128_1024.csv')
+vgg_128_2048 = pd.read_csv('./loss_histories/hist.vgg_128_2048.csv')
+
+vgg_256_512 = pd.read_csv('./loss_histories/hist.vgg_256_512.csv')
+vgg_256_1024 = pd.read_csv('./loss_histories/hist.vgg_256_1024.csv')
+vgg_256_2048 = pd.read_csv('./loss_histories/hist.vgg_256_2048.csv')
+
+vgg_512_512 = pd.read_csv('./loss_histories/hist.vgg_512_512.csv')
+vgg_512_1024 = pd.read_csv('./loss_histories/hist.vgg_512_1024.csv')
+vgg_512_2048 = pd.read_csv('./loss_histories/hist.vgg_512_2048.csv')
+
+
+val_ind = list(range(0,5000,100))
+fig, ax = plt.subplots(4,3)
+
+ax[0,0].plot(vgg_64_512['0'][val_ind])
+ax[0,0].plot(vgg_64_512['1'][val_ind])
+ax[0,0].plot(vgg_64_512['2'][val_ind])
+ax[0,1].plot(vgg_64_1024['0'][val_ind])
+ax[0,1].plot(vgg_64_1024['1'][val_ind])
+ax[0,1].plot(vgg_64_1024['2'][val_ind])
+ax[0,2].plot(vgg_64_2048['0'][val_ind])
+ax[0,2].plot(vgg_64_2048['1'][val_ind])
+ax[0,2].plot(vgg_64_2048['2'][val_ind])
+
+ax[1,0].plot(vgg_128_512['0'][val_ind])
+ax[1,0].plot(vgg_128_512['1'][val_ind])
+ax[1,0].plot(vgg_128_512['2'][val_ind])
+ax[1,1].plot(vgg_128_1024['0'][val_ind])
+ax[1,1].plot(vgg_128_1024['1'][val_ind])
+ax[1,1].plot(vgg_128_1024['2'][val_ind])
+ax[1,2].plot(vgg_128_2048['0'][val_ind])
+ax[1,2].plot(vgg_128_2048['1'][val_ind])
+ax[1,2].plot(vgg_128_2048['2'][val_ind])
+
+ax[2,0].plot(vgg_256_512['0'][val_ind])
+ax[2,0].plot(vgg_256_512['1'][val_ind])
+ax[2,0].plot(vgg_256_512['2'][val_ind])
+ax[2,1].plot(vgg_256_1024['0'][val_ind])
+ax[2,1].plot(vgg_256_1024['1'][val_ind])
+ax[2,1].plot(vgg_256_1024['2'][val_ind])
+ax[2,2].plot(vgg_256_2048['0'][val_ind])
+ax[2,2].plot(vgg_256_2048['1'][val_ind])
+ax[2,2].plot(vgg_256_2048['2'][val_ind])
+
+ax[3,0].plot(vgg_512_512['0'][val_ind])
+ax[3,0].plot(vgg_512_512['1'][val_ind])
+ax[3,0].plot(vgg_512_512['2'][val_ind])
+ax[3,1].plot(vgg_512_1024['0'][val_ind])
+ax[3,1].plot(vgg_512_1024['1'][val_ind])
+ax[3,1].plot(vgg_512_1024['2'][val_ind])
+ax[3,2].plot(vgg_512_2048['0'][val_ind])
+ax[3,2].plot(vgg_512_2048['1'][val_ind])
+ax[3,2].plot(vgg_512_2048['2'][val_ind])
+
+
